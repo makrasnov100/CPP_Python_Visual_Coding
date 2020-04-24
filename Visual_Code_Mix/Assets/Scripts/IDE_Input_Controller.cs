@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class IDE_Controller : MonoBehaviour
+public class IDE_Input_Controller : MonoBehaviour
 {
-    static IDE_Controller instance;
+    static IDE_Input_Controller instance;
 
 
     //Input settings
@@ -64,14 +64,14 @@ public class IDE_Controller : MonoBehaviour
     void createNewNode()
     {
         GameObject curNode = Instantiate(genericNode, mainCamera.ScreenToWorldPoint(Input.mousePosition), Quaternion.identity, gameObject.transform);
-        NodeIdentity curIdentity = curNode.AddComponent<NodeIdentity>();
+        NodeIdentity curIdentity = curNode.GetComponent<NodeIdentity>();
         curNode.transform.position = new Vector3(curNode.transform.position.x, curNode.transform.position.y, 0);
         string nodeId = randomString(8);
         while (nodes.ContainsKey(nodeId))
         {
             nodeId = randomString(8);
         }
-        curIdentity.setupNode(nodeId);
+        curIdentity.setID(nodeId);
 
         nodes.Add(nodeId, curIdentity);
     }

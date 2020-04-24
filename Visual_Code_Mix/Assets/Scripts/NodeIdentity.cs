@@ -7,81 +7,32 @@ public enum DataType {none, intT, doubleT,stringT,boolT}
 public enum FunctionType {none, cpp, python, visual}
 public class NodeIdentity : MonoBehaviour
 {
-
-
     //Node settings;
     string id = "";
     NodeType nodeType = NodeType.none;
     DataType dataType = DataType.none;
     FunctionType funcType = FunctionType.none;
 
-    //NODE SETUP
-    public void setupNode(string id)
+    public void setID(string id)
     {
         this.id = id;
-        beginSetup();
     }
 
+    public void clearNode() {}
 
-    void beginSetup()
+    public void updateNodeState(Dictionary<string, string> inputs)
     {
-        //Display type of node selection
-        displaySelectionOptions(
-            new List<string>() {"Data", "Selection", "Loop", "Function"},
-            new List<Color>() { }
-        );
-    }
-
-    public void onSelectedNodeType(NodeType typeSelected)
-    {
-        nodeType = typeSelected;
-        //Display type of node selection
-        displaySelectionOptions(
-            new List<string>() { "Data", "Selection", "Loop", "Function" },
-            new List<Color>() {Color.magenta, Color.cyan, Color.yellow, Color.green}
-        );
-    }
-
-    public void onSelectedDataType(DataType typeSelected)
-    {
-        dataType = typeSelected;
-        clearSelections();
-    }
-
-
-    //[UI RELATED]
-    float optionPadding = .2f;
-    float outsidePadding = .2f;
-    List<NodeOptionSetup> nodeOptions = new List<NodeOptionSetup>();
-    public GameObject containerRow;
-    public GameObject nodeOption;
-    void displaySelectionOptions(List<string> text, List<Color> colors)
-    {
-        //Check if can display
-        if (text.Count != colors.Count)
+        //Perform variable changes
+        foreach (KeyValuePair<string, string> argument in inputs)
         {
-            return;
-        }
+            //look through arguments see if valid inputs update all values
+            
 
-        //Calculate the dimensions of options
-        float parentWidth = gameObject.transform.localScale.x;
-        float optionWidth = (parentWidth - (2 * outsidePadding) - (optionPadding * (text.Count-1))) / text.Count;
-        float parentHeight = gameObject.transform.localScale.y;
-        float optionHeight = parentHeight - (2 * outsidePadding);
 
-        //Populate the Node
-        for (int i = 0; i < text.Count; i++)
-        {
-            //Instnatiete
         }
-    }
+        //Perform apearences 
 
-    void clearSelections()
-    {
-        for (int i = 0; i < nodeOptions.Count; i++)
-        {
-            Destroy(nodeOptions[i]);
-        }
-        nodeOptions.Clear();
+        //determine the outputs posible (if any)
+            //ad them to the all possible values
     }
 }
