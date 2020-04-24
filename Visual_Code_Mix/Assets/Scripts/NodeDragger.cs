@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Shapes2D;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,13 +24,37 @@ public class NodeDragger : MonoBehaviour
         sortingOrder = spriteRender.sortingOrder;
         spriteRender.sortingOrder = 100;
         isBeingDragged = true;
+        selectNode();
     }
+
+
 
     private void OnMouseUp()
     {
         spriteRender.sortingOrder = sortingOrder;
         isBeingDragged = false;
+        deselectNode();
     }
+
+    //[NODE SELECTION]
+    public NodeIdentity nodeIdentity;
+    public Shape nodeShape;
+    Color oldOutline;
+    Color oldFill;
+    public void selectNode()
+    {
+        oldOutline = nodeShape.settings.outlineColor;
+        oldFill = nodeShape.settings.fillColor;
+        IDE_Coding_Controller.instance.setTarget(nodeIdentity, new List<string> { "type", "name", "value"}, "Node:");
+
+        //TODO: checnge to sleected color
+    }
+
+    public void deselectNode()
+    {
+        //TODO: checnge to old color
+    }
+
 
     //[UPDATE POSITION FUNCOTIONS]
     private void Update()

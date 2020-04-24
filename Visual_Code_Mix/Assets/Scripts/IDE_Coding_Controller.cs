@@ -5,7 +5,7 @@ using TMPro;
 
 public class IDE_Coding_Controller : MonoBehaviour
 {
-    static IDE_Coding_Controller instance;
+    static public IDE_Coding_Controller instance;
 
     private void Awake()
     {
@@ -20,14 +20,14 @@ public class IDE_Coding_Controller : MonoBehaviour
     List<string> parameters;
 
     //Target Editing
-    void setTarget(NodeIdentity targetNode, List<string> parameters, string title)
+    public void setTarget(NodeIdentity targetNode, List<string> parameters, string title)
     {
         simpleCodeInputField.text = "";
         this.targetNode = targetNode;
         parameters = this.parameters;
     }
 
-    void onEditSimpleCodeField()
+    public void onEditSimpleCodeField()
     {
 
     }

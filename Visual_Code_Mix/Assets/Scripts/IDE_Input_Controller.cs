@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class IDE_Input_Controller : MonoBehaviour
 {
-    static IDE_Input_Controller instance;
+    static public IDE_Input_Controller instance;
 
 
     //Input settings
