@@ -17,7 +17,7 @@ public class IDE_Input_Controller : MonoBehaviour
     //Instance variables
     public int currentClicks = 0;
 
-    //Used prefabs/objketcs
+    //Used prefabs/objects
     public GameObject genericNode;
     public Camera mainCamera;
 

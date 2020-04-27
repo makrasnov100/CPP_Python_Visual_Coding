@@ -18,6 +18,7 @@ public class NodeIdentity : MonoBehaviour
         this.id = id;
     }
 
+    
     public void clearNode() {}
 
     public void updateNodeState(Dictionary<string, string> inputs)

@@ -15,8 +15,8 @@ public class IDE_Coding_Controller : MonoBehaviour
             instance = this;
     }
 
-    TMP_InputField simpleCodeInputField;
-    NodeIdentity targetNode;
+    public TMP_InputField simpleCodeInputField;
+    public NodeIdentity targetNode;
     List<string> parameters;
 
     //Target Editing

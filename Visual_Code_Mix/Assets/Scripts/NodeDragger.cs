@@ -33,7 +33,6 @@ public class NodeDragger : MonoBehaviour
     {
         spriteRender.sortingOrder = sortingOrder;
         isBeingDragged = false;
-        deselectNode();
     }
 
     //[NODE SELECTION]
@@ -43,16 +42,22 @@ public class NodeDragger : MonoBehaviour
     Color oldFill;
     public void selectNode()
     {
+        //deselect old node if there is one
+        if (IDE_Coding_Controller.instance && IDE_Coding_Controller.instance.targetNode)
+            IDE_Coding_Controller.instance.targetNode.GetComponent<NodeDragger>().deselectNode();
+
         oldOutline = nodeShape.settings.outlineColor;
         oldFill = nodeShape.settings.fillColor;
         IDE_Coding_Controller.instance.setTarget(nodeIdentity, new List<string> { "type", "name", "value"}, "Node:");
 
-        //TODO: checnge to sleected color
+        //Chage to selected state
+        nodeShape.settings.outlineColor = Color.green;
     }
 
     public void deselectNode()
     {
-        //TODO: checnge to old color
+        //Change to desected visual state
+        nodeShape.settings.outlineColor = oldOutline;
     }
 
 
