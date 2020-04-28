@@ -48,7 +48,7 @@ public class NodeDragger : MonoBehaviour
 
         oldOutline = nodeShape.settings.outlineColor;
         oldFill = nodeShape.settings.fillColor;
-        IDE_Coding_Controller.instance.setTarget(nodeIdentity, new List<string> { "type", "name", "value"}, "Node:");
+        IDE_Coding_Controller.instance.setTarget(nodeIdentity, "Node: ");
 
         //Chage to selected state
         nodeShape.settings.outlineColor = Color.green;

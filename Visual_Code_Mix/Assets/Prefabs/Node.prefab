@@ -394,7 +394,7 @@ MonoBehaviour:
   settings:
     _blur: 0
     _endAngle: 360
-    _fillColor: {r: 0.9433962, g: 0.9433962, b: 0.9433962, a: 1}
+    _fillColor: {r: 0.95, g: 0.95, b: 0.95, a: 1}
     _fillColor2: {r: 0.94509804, g: 0.76862746, b: 0.05882353, a: 1}
     _fillOffset: {x: 0, y: 0}
     _fillPathLoops: 0
@@ -539,3 +539,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1aaadded54eed47b1d7a845b983d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nodeShape: {fileID: 7339066048461634564}
