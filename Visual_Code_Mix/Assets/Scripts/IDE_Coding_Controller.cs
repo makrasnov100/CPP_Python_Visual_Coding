@@ -30,12 +30,24 @@ public class IDE_Coding_Controller : MonoBehaviour
         canEditTarget = false;
         string curNodeVal = title;
         this.targetNode = targetNode;
-        if (targetNode.nodeType == NodeType.none)
+        if (targetNode.nodeType == NodeType.none || targetNode.nodeType == NodeType.data)
         {
             parameters = new List<InputType>() { InputType.nodeType, InputType.dataType, InputType.name, InputType.value };
             if (targetNode.nodeType != NodeType.none)
             {
-                curNodeVal += " " + targetNode.nodeType.ToString();
+                curNodeVal += targetNode.nodeType.ToString();
+                if (targetNode.dataType != DataType.noneT)
+                {
+                    curNodeVal += " " + targetNode.dataType.ToString().Substring(0, targetNode.dataType.ToString().Length - 1);
+                    if (targetNode.nodeName != "")
+                    {
+                        curNodeVal += " " + targetNode.nodeName;
+                        if (targetNode.nodeValue != "")
+                        {
+                            curNodeVal += " " + targetNode.nodeValue;
+                        }
+                    }
+                }
             }
         }
         else 
@@ -56,6 +68,7 @@ public class IDE_Coding_Controller : MonoBehaviour
         args.RemoveAt(0);
         List<InputType> finalArgsTypes = new List<InputType>();
         List<object> finalArgs = new List<object>();
+        List<string> finalArgsStr = new List<string>();
 
         if (args.Count > parameters.Count)
         {
@@ -84,30 +97,61 @@ public class IDE_Coding_Controller : MonoBehaviour
                 }
                 else if (parameters[i] == InputType.dataType)
                 {
-                    isPass = false;
+                    try
+                    {
+                        if (args[i] == "")
+                            result = Enum.Parse(typeof(DataType), "noneT");
+                        else
+                            result = Enum.Parse(typeof(DataType), args[i]+ "T");
+                    }
+                    catch (ArgumentException e)
+                    {
+                        isPass = false;
+                    }
                 }
                 else if (parameters[i] == InputType.name)
                 {
-                    isPass = false;
+                    try
+                    {
+                        if (args[i] == "")
+                            isPass = false;
+                        else
+                            result = (object)args[i];
+                    }
+                    catch (ArgumentException e)
+                    {
+                        isPass = false;
+                    }
                 }
                 else if (parameters[i] == InputType.value)
                 {
-                    isPass = false;
+                    try
+                    {
+                        if (args[i] == "")
+                            isPass = false; 
+                        else
+                            result = (object)args[i];
+                    }
+                    catch (ArgumentException e)
+                    {
+                        isPass = false;
+                    }
                 }
                 else
                 {
                     isPass = false;
                 }
 
-                //If currecnt argument passed then put into argunment list
+                //If current argument passed then put into argunment list
                 if (isPass && result != null)
                 {
                     finalArgsTypes.Add(parameters[i]);
                     finalArgs.Add(result);
+                    finalArgsStr.Add(args[i]);
                 }
             }
         }
 
-        targetNode.updateNodeState(finalArgsTypes, finalArgs);
+        targetNode.updateNodeState(finalArgsTypes, finalArgs, finalArgsStr);
     }
 }
