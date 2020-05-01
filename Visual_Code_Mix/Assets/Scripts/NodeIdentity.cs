@@ -24,7 +24,7 @@ public class NodeIdentity : MonoBehaviour
 
     private void Start()
     {
-        clearNode();
+        clearNode(0);
     }
 
     public void setID(string id)
@@ -33,13 +33,22 @@ public class NodeIdentity : MonoBehaviour
     }
 
     
-    public void clearNode() 
+    //Level - 1 : clears everything
+    //Level - 2 : clears only node tpye specific items
+    public void clearNode(int level) 
     {
-        nodeType = NodeType.none;
-        dataType = DataType.noneT;
-        funcType = FunctionType.none;
-        nodeName = "";
-        nodeValue = "";
+        if (level <= 2)
+        {
+            dataType = DataType.noneT;
+            funcType = FunctionType.none;
+            nodeName = "";
+            nodeValue = "";
+
+            if (level <= 1)
+            {
+                nodeType = NodeType.none;
+            }
+        }
     }
 
     public void updateNodeState(List<InputType> inputType, List<object> inputValue, List<string> inputValueStr)
@@ -49,6 +58,12 @@ public class NodeIdentity : MonoBehaviour
             Debug.LogError("Not thesame number of tpyes of nodes ");
             return;
         }
+
+        //Clear node at aproprieate level
+        if (nodeType != NodeType.none)
+            clearNode(2);   //clear for specific node type
+        else
+            clearNode(1);   //clear all
 
         //Get all values
         for (int i = 0; i < inputType.Count; i++)
@@ -84,7 +99,7 @@ public class NodeIdentity : MonoBehaviour
         else if (nodeType == NodeType.none)
         {
             nodeShape.settings.fillColor = new Color(.95f, .95f, .95f);
-            clearNode();
+            clearNode(1);
         }
         else
         {
@@ -117,5 +132,16 @@ public class NodeIdentity : MonoBehaviour
 
         //determine the outputs posible (if any)
         //ad them to the all possible values
+    }
+
+
+    public override string ToString()
+    {
+        if (nodeType == NodeType.none)
+            return "Empty Node";
+        else if (nodeType == NodeType.data && nodeValue != "")
+            return nodeValue;
+        else 
+            return nodeType.ToString().ToUpper()[0] + nodeType.ToString().Substring(1) + " Node";
     }
 }

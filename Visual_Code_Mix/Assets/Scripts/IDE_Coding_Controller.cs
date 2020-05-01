@@ -19,33 +19,66 @@ public class IDE_Coding_Controller : MonoBehaviour
             instance = this;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            updateTarget(targetNode);
+            simpleCodeInputField.ActivateInputField();
+        }
+    }
+
+
     public TMP_InputField simpleCodeInputField;
+    public TMP_Text simpleCodeTitle;
     public NodeIdentity targetNode;
     public bool canEditTarget = true;
     public List<InputType> parameters = new List<InputType>();
+
+    //TODO change to get actual next state of 
+    public void updateTarget(NodeIdentity newIdentity)
+    {
+        targetNode = newIdentity;
+        string curTitle = "";
+        if (targetNode.nodeType != NodeType.none)
+        {
+            //form title
+            curTitle += "" + targetNode.nodeType.ToString().ToUpper()[0];
+            curTitle += targetNode.nodeType.ToString().Substring(1);
+            curTitle += " Node:";
+        }
+        else 
+        {
+            curTitle += "Node:";
+        }
+
+        setTarget(targetNode, curTitle);
+    }
 
     //Target Editing
     public void setTarget(NodeIdentity targetNode, string title)
     {
         canEditTarget = false;
-        string curNodeVal = title;
+        simpleCodeTitle.text = title;
+        simpleCodeInputField.gameObject.SetActive(true);
+        string curNodeVal = "";
         this.targetNode = targetNode;
-        if (targetNode.nodeType == NodeType.none || targetNode.nodeType == NodeType.data)
+        if (targetNode.nodeType == NodeType.none)
         {
-            parameters = new List<InputType>() { InputType.nodeType, InputType.dataType, InputType.name, InputType.value };
-            if (targetNode.nodeType != NodeType.none)
+            parameters = new List<InputType>() { InputType.nodeType};
+        }
+        else if (targetNode.nodeType == NodeType.data)
+        {
+            parameters = new List<InputType>() { InputType.dataType, InputType.name, InputType.value };
+            if (targetNode.dataType != DataType.noneT)
             {
-                curNodeVal += targetNode.nodeType.ToString();
-                if (targetNode.dataType != DataType.noneT)
+                curNodeVal += " " + targetNode.dataType.ToString().Substring(0, targetNode.dataType.ToString().Length - 1);
+                if (targetNode.nodeName != "")
                 {
-                    curNodeVal += " " + targetNode.dataType.ToString().Substring(0, targetNode.dataType.ToString().Length - 1);
-                    if (targetNode.nodeName != "")
+                    curNodeVal += " " + targetNode.nodeName;
+                    if (targetNode.nodeValue != "")
                     {
-                        curNodeVal += " " + targetNode.nodeName;
-                        if (targetNode.nodeValue != "")
-                        {
-                            curNodeVal += " " + targetNode.nodeValue;
-                        }
+                        curNodeVal += " " + targetNode.nodeValue;
                     }
                 }
             }
@@ -59,13 +92,13 @@ public class IDE_Coding_Controller : MonoBehaviour
         canEditTarget = true;
     }
 
+    string oldAcceptedText = "";
     public void onEditSimpleCodeField()
     {
         if (!canEditTarget)
             return;
 
         List<string> args = new List<string>(simpleCodeInputField.text.Split(' '));
-        args.RemoveAt(0);
         List<InputType> finalArgsTypes = new List<InputType>();
         List<object> finalArgs = new List<object>();
         List<string> finalArgsStr = new List<string>();
@@ -73,6 +106,7 @@ public class IDE_Coding_Controller : MonoBehaviour
         if (args.Count > parameters.Count)
         {
             Debug.LogError("More arguments than there are node parameters");
+            simpleCodeInputField.text = oldAcceptedText;
         }
         else //argumets passed the first row of tests
         {
@@ -152,6 +186,19 @@ public class IDE_Coding_Controller : MonoBehaviour
             }
         }
 
+        oldAcceptedText = simpleCodeInputField.text;
         targetNode.updateNodeState(finalArgsTypes, finalArgs, finalArgsStr);
+    }
+
+
+    //[CREATING CONNECTIONS]
+    NodeIdentity sourceNode = null;
+    string sourceID = "";
+    public void addConnection(NodeIdentity sinkNode, string sinkID)
+    {
+        if (sourceNode == null)
+            return;
+
+        //set 
     }
 }
