@@ -27,8 +27,6 @@ public class NodeDragger : MonoBehaviour
         selectNode();
     }
 
-
-
     private void OnMouseUp()
     {
         spriteRender.sortingOrder = sortingOrder;

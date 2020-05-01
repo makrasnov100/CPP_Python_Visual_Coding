@@ -48,7 +48,19 @@ public class IDE_Input_Controller : MonoBehaviour
         if (currentClicks >= 2)
         {
             currentClicks = 0;
-            createNewNode();
+            RaycastHit2D hit = Physics2D.Raycast(mainCamera.ScreenToWorldPoint(Input.mousePosition), -Vector2.up);
+            //Refernce: https://docs.unity3d.com/ScriptReference/Physics2D.Raycast.html
+            if (hit.collider != null)
+            {
+                if (hit.collider.gameObject.tag == "NodeConnectOut")
+                {
+                    addConnection(hit.collider.gameObject.GetComponent<ConnectionLink>().parent);
+                }
+            }
+            else //didn't hit anything (creating new node)
+            {
+                createNewNode();
+            }
             StopAllCoroutines();
         }
         else 
@@ -85,5 +97,18 @@ public class IDE_Input_Controller : MonoBehaviour
             newWord[i] = chars[UnityEngine.Random.Range(0, chars.Length)];
         }
         return new string(newWord);
+    }
+
+    //[CREATING CONNECTIONS]
+    public ConnectionLink sourceNode = null;
+    public void addConnection(NodeIdentity sinkNode)
+    {
+        if (sourceNode == null || sourceNode.parent == null)
+            return;
+
+        sourceNode.AddConnection(sinkNode);
+
+        sourceNode.Deselect();
+        sourceNode = null;
     }
 }

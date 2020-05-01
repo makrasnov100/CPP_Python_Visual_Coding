@@ -13,18 +13,21 @@ public class NodeIdentity : MonoBehaviour
     public Shape nodeShape;
     public TMP_Text label;
     public GameObject outputHandle;
+    public GameObject inputHandle;
 
     //Node settings;
-    string id = "";
+    public string id = "";
     public NodeType nodeType { get; set; }
     public DataType dataType { get; set; }
     public string nodeName { get; set; }
     public string nodeValue { get; set; }
     public FunctionType funcType { get; set; }
+    public BaseFunction functionValue { get; set; }
 
     private void Start()
     {
         clearNode(0);
+        updateNodeState(new List<InputType>(), new List<object>(), new List<string>());
     }
 
     public void setID(string id)
@@ -129,9 +132,19 @@ public class NodeIdentity : MonoBehaviour
         }
         label.text = nodeText;
         outputHandle.SetActive(nodeText.Contains(" = "));
+        inputHandle.SetActive(nodeType == NodeType.function);
 
         //determine the outputs posible (if any)
         //ad them to the all possible values
+    }
+
+    List<ConnectionLink> outputs = new List<ConnectionLink>();
+    public void deselectOutputs()
+    {
+        foreach (ConnectionLink output in outputs)
+        {
+            output.Deselect();
+        }
     }
 
 

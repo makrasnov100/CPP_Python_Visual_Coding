@@ -10,7 +10,6 @@ public class IDE_Coding_Controller : MonoBehaviour
 {
     static public IDE_Coding_Controller instance;
 
-
     private void Awake()
     {
         if (instance != null)
@@ -188,17 +187,5 @@ public class IDE_Coding_Controller : MonoBehaviour
 
         oldAcceptedText = simpleCodeInputField.text;
         targetNode.updateNodeState(finalArgsTypes, finalArgs, finalArgsStr);
-    }
-
-
-    //[CREATING CONNECTIONS]
-    NodeIdentity sourceNode = null;
-    string sourceID = "";
-    public void addConnection(NodeIdentity sinkNode, string sinkID)
-    {
-        if (sourceNode == null)
-            return;
-
-        //set 
     }
 }
