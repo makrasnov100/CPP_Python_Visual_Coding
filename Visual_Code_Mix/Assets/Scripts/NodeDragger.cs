@@ -2,12 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class NodeDragger : MonoBehaviour
 {
     Camera mainCam;
     public SpriteRenderer spriteRender;
     int sortingOrder = 0;
+    int sortingOrderText = 0;
+    int sortingOrderConnectionPoints = 0;
+
 
     Vector3 startDragPos = Vector3.zero;
     bool isBeingDragged = false;
@@ -19,18 +23,35 @@ public class NodeDragger : MonoBehaviour
 
     //[MOUSE EVENTS FUNCTIONS]
     //UI References for sorting order
+    public MeshRenderer nodeText;
+    public SpriteRenderer nodeInput;
+    public SpriteRenderer nodeOutput;
     private void OnMouseDown()
     {
         startDragPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+
+        //Making all node content apear on top of other nodes
         sortingOrder = spriteRender.sortingOrder;
+        sortingOrderText = nodeText.sortingOrder;
+        sortingOrderConnectionPoints = nodeInput.sortingOrder;
         spriteRender.sortingOrder = 100;
+        nodeText.sortingOrder = 101;
+        nodeInput.sortingOrder = 102;
+        nodeOutput.sortingOrder = 102;
+
         isBeingDragged = true;
         selectNode();
     }
 
     private void OnMouseUp()
     {
+        //Placing node wher it was before in terms of sortin
         spriteRender.sortingOrder = sortingOrder;
+        nodeText.sortingOrder = sortingOrderText;
+        nodeInput.sortingOrder = sortingOrderConnectionPoints;
+        nodeOutput.sortingOrder = sortingOrderConnectionPoints;
+        spriteRender.sortingOrder = sortingOrder;
+
         isBeingDragged = false;
     }
 

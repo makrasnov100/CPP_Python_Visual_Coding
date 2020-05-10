@@ -76,7 +76,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
 --- !u!33 &745402352
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -709,6 +709,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRender: {fileID: 7339066048461634565}
+  nodeText: {fileID: 745402353}
+  nodeInput: {fileID: 809955165}
+  nodeOutput: {fileID: 5173655064837762926}
   nodeIdentity: {fileID: 1024751487}
   nodeShape: {fileID: 7339066048461634564}
 --- !u!61 &7339066048461634619
