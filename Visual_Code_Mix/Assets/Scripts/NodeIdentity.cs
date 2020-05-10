@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Shapes2D;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 
 public enum NodeType{none,data,selection,loop,function}
 public enum DataType {noneT, intT, doubleT,stringT,boolT}
@@ -84,7 +85,15 @@ public class NodeIdentity : MonoBehaviour
             }
             else if (inputType[i] == InputType.name)
             {
-                nodeName = inputValueStr[i];
+                if (nodeType != NodeType.function)
+                {
+                    nodeName = inputValueStr[i];
+                }
+                else
+                {
+                    if (Library.instance.functions.ContainsKey(inputValueStr[i]))
+                        nodeName = inputValueStr[i];
+                }
             }
             else if (inputType[i] == InputType.value)
             {
@@ -131,6 +140,13 @@ public class NodeIdentity : MonoBehaviour
                         nodeText += " = " + visualNodeVal;
                     }
                 }
+            }
+        }
+        else if (nodeType == NodeType.function)
+        {
+            if (nodeName != "")
+            {
+                nodeText += nodeName;
             }
         }
         label.text = nodeText;

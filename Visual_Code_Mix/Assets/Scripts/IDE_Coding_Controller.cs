@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using System.Linq;
 
 public enum InputType {nodeType, dataType, name, value}
 
@@ -54,7 +55,9 @@ public class IDE_Coding_Controller : MonoBehaviour
         setTarget(targetNode, curTitle);
     }
 
+
     //Target Editing
+    //setTarget: every new node selection alters the input field list of parameters, this function sets the order and type of these parameters
     public void setTarget(NodeIdentity targetNode, string title)
     {
         canEditTarget = false;
@@ -64,7 +67,7 @@ public class IDE_Coding_Controller : MonoBehaviour
         this.targetNode = targetNode;
         if (targetNode.nodeType == NodeType.none)
         {
-            parameters = new List<InputType>() { InputType.nodeType};
+            parameters = new List<InputType>() { InputType.nodeType };
         }
         else if (targetNode.nodeType == NodeType.data)
         {
@@ -82,7 +85,15 @@ public class IDE_Coding_Controller : MonoBehaviour
                 }
             }
         }
-        else 
+        else if (targetNode.nodeType == NodeType.function)
+        {
+            parameters = new List<InputType>() { InputType.name };
+            if (Library.instance && Library.instance.functions.ContainsKey(targetNode.nodeName))
+            {
+                curNodeVal += targetNode.nodeName;
+            }
+        }
+        else
         {
             Debug.LogError("Unrecognized Node is being edited!");
         }
@@ -91,6 +102,7 @@ public class IDE_Coding_Controller : MonoBehaviour
         canEditTarget = true;
     }
 
+    //Each time user edits the input field this code gets function is called updating the selected node
     string oldAcceptedText = "";
     public void onEditSimpleCodeField()
     {

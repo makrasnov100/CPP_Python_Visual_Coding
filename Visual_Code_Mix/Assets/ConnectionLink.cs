@@ -94,5 +94,5 @@ public class ConnectionLink : MonoBehaviour
         return lr;
     }
 
-    //Create coroutine that draws line between mouse and selected output node?
+    //Create coroutine that draws a line between mouse and selected output node?
 }

@@ -28,9 +28,4 @@ public class Library : MonoBehaviour
         functions.Add("print", new printValue());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

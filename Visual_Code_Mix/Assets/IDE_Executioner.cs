@@ -34,19 +34,20 @@ public class IDE_Executioner : MonoBehaviour
         }
 
         //Adds an incoming connection
-        if (!connectionsOut.ContainsKey(sinkId))
+        if (!connectionsIn.ContainsKey(sinkId))
         {
-            connectionsOut.Add(sinkId, new Dictionary<string, OutgoingInfo>());
+            connectionsIn.Add(sinkId, new Dictionary<string, OutgoingInfo>());
         }
-        if (!connectionsOut[sinkId].ContainsKey(source.id))
+        if (!connectionsIn[sinkId].ContainsKey(source.id))
         {
-            connectionsOut[sinkId].Add(source.id, destination);
+            connectionsIn[sinkId].Add(source.id, destination);
         }
     }
 
     //[DURING EXECUTION]
     public void executeCode()
     {
+        printGraph();
         //Find all sources
 
         //Execute until need additional info move to next source
@@ -54,6 +55,20 @@ public class IDE_Executioner : MonoBehaviour
         //Execute program until all nodes visited
     }
 
-
     //[DEBUG]
+    void printGraph()
+    {
+        string graphConnections = "Graph Connections:\n";
+
+        foreach (KeyValuePair<string, Dictionary<string, OutgoingInfo>> node in connectionsOut)
+        {
+            graphConnections += node.Key + " connected to - \n     ";
+            foreach (KeyValuePair<string, OutgoingInfo> connection in node.Value)
+            {
+                graphConnections += connection + ",";
+            }
+        }
+
+        Debug.Log(graphConnections);
+    }
 }
