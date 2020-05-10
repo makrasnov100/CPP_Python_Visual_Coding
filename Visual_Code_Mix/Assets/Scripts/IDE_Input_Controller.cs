@@ -47,7 +47,6 @@ public class IDE_Input_Controller : MonoBehaviour
         currentClicks += 1;
         if (currentClicks >= 2)
         {
-            currentClicks = 0;
             RaycastHit2D hit = Physics2D.Raycast(mainCamera.ScreenToWorldPoint(Input.mousePosition), -Vector2.up);
             //Refernce: https://docs.unity3d.com/ScriptReference/Physics2D.Raycast.html
             if (hit.collider != null)
@@ -61,6 +60,7 @@ public class IDE_Input_Controller : MonoBehaviour
             {
                 createNewNode();
             }
+            currentClicks = 0;
             StopAllCoroutines();
         }
         else 

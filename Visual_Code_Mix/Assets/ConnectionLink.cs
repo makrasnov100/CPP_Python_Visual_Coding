@@ -47,7 +47,7 @@ public class ConnectionLink : MonoBehaviour
     {
         if (IDE_Input_Controller.instance != null && isOutput)
         {
-            if (IDE_Input_Controller.instance.sourceNode != null)
+            if (IDE_Input_Controller.instance.sourceNode != null && IDE_Input_Controller.instance.sourceNode != this)
             {
                 IDE_Input_Controller.instance.sourceNode.Deselect();
             }
@@ -79,7 +79,9 @@ public class ConnectionLink : MonoBehaviour
     public Material lineMaterial;
     public LineRenderer makeArrow(Transform outLink, Transform inLink)
     {
-        LineRenderer lr = gameObject.AddComponent<LineRenderer>();
+        GameObject line = new GameObject("Connection");
+        line.transform.SetParent(this.transform);
+        LineRenderer lr = line.AddComponent<LineRenderer>();
         Vector3 endPos = new Vector3(inLink.position.x, inLink.position.y, -1);
         Vector3 startPos = new Vector3(outLink.position.x, outLink.position.y, -1);
         lr.SetPositions(new Vector3[] { endPos, startPos });
