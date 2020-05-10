@@ -7,8 +7,8 @@ using UnityEngine;
 public class Library : MonoBehaviour
 {
     public static Library instance;
-
     public Dictionary<string, BaseFunction> functions;
+
 
     void Awake()
     {

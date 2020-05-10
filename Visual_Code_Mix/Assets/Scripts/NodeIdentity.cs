@@ -9,6 +9,9 @@ public enum DataType {noneT, intT, doubleT,stringT,boolT}
 public enum FunctionType {none, cpp, python, visual}
 public class NodeIdentity : MonoBehaviour
 {
+    //Instance variables
+    public List<OutgoingInfo> connections = new List<OutgoingInfo>(); 
+
     //UI references
     public Shape nodeShape;
     public TMP_Text label;

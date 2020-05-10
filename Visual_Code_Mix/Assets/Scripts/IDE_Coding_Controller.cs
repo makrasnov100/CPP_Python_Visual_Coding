@@ -111,7 +111,7 @@ public class IDE_Coding_Controller : MonoBehaviour
         {
             for(int i = 0; i < args.Count; i++)
             {
-                //check to see if entered text matchesthe parameter contraints
+                //check to see if entered text matches the parameter contraints
                 bool isPass = true;
                 object result = null;
                 if (parameters[i] == InputType.nodeType)

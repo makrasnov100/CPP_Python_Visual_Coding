@@ -18,6 +18,7 @@ public class NodeDragger : MonoBehaviour
     }
 
     //[MOUSE EVENTS FUNCTIONS]
+    //UI References for sorting order
     private void OnMouseDown()
     {
         startDragPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
@@ -71,6 +72,44 @@ public class NodeDragger : MonoBehaviour
     {
         transform.position = transform.position + (mainCam.ScreenToWorldPoint(Input.mousePosition) - startDragPos);
         startDragPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+        //Update the attached lines of dragged nodes
+        foreach (OutgoingInfo connection in nodeIdentity.connections)
+        {
+            bool isSourceOfConnection = connection.sourceIdentity.parent.id == nodeIdentity.id;
+            if (isSourceOfConnection)
+            {
+                Vector3 newPos = new Vector3(connection.sourceIdentity.transform.position.x, connection.sourceIdentity.transform.position.y, -1);
+                connection.connectionArrow.SetPosition(1, newPos);
+            }
+            else
+            {
+                Vector3 newPos = new Vector3(connection.sinkIdentity.transform.position.x, connection.sinkIdentity.transform.position.y, -1);
+                connection.connectionArrow.SetPosition(0, newPos);
+            }
+        }
+
+
+        //if (IDE_Executioner.instance)
+        //{
+        //    if (IDE_Executioner.instance.connectionsOut.ContainsKey(nodeIdentity.id))
+        //    {
+        //        foreach (KeyValuePair<string, OutgoingInfo> connection in IDE_Executioner.instance.connectionsOut[nodeIdentity.id])
+        //        {
+        //            connection.Value.
+        //        }
+        //    }
+        //    if (IDE_Executioner.instance.connectionsIn.ContainsKey(nodeIdentity.id))
+        //    {
+        //        foreach (KeyValuePair<string, OutgoingInfo> connection in IDE_Executioner.instance.connectionsIn[nodeIdentity.id])
+        //        {
+
+        //        }
+        //    }
+        //}
+        //else
+        //{
+
+        //}
     }
 
 

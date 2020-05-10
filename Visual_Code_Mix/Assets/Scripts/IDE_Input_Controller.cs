@@ -52,9 +52,9 @@ public class IDE_Input_Controller : MonoBehaviour
             //Refernce: https://docs.unity3d.com/ScriptReference/Physics2D.Raycast.html
             if (hit.collider != null)
             {
-                if (hit.collider.gameObject.tag == "NodeConnectOut")
+                if (hit.collider.gameObject.tag == "NodeConnectIn")
                 {
-                    addConnection(hit.collider.gameObject.GetComponent<ConnectionLink>().parent);
+                    addConnection(hit.collider.gameObject.GetComponent<ConnectionLink>());
                 }
             }
             else //didn't hit anything (creating new node)
@@ -101,12 +101,15 @@ public class IDE_Input_Controller : MonoBehaviour
 
     //[CREATING CONNECTIONS]
     public ConnectionLink sourceNode = null;
-    public void addConnection(NodeIdentity sinkNode)
+    public void addConnection(ConnectionLink sinkNode)
     {
         if (sourceNode == null || sourceNode.parent == null)
             return;
-
-        sourceNode.AddConnection(sinkNode);
+        
+        //Keep track of the new connection visual and in code
+        OutgoingInfo outInfo = sourceNode.AddConnection(sinkNode);
+        if (IDE_Executioner.instance)
+            IDE_Executioner.instance.addConnection(sourceNode.parent, outInfo);
 
         sourceNode.Deselect();
         sourceNode = null;

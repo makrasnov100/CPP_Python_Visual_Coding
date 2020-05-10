@@ -357,7 +357,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shape: {fileID: 809955166}
+  isOutput: 1
+  isSelected: 0
   parent: {fileID: 1024751487}
+  lineMaterial: {fileID: 2100000, guid: 0a23027d18dc1b04fae8a3516e904e47, type: 2}
 --- !u!58 &2085530199
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -528,7 +531,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shape: {fileID: 8090744617911953407}
+  isOutput: 0
+  isSelected: 0
   parent: {fileID: 1024751487}
+  lineMaterial: {fileID: 2100000, guid: 0a23027d18dc1b04fae8a3516e904e47, type: 2}
 --- !u!58 &1504858874
 CircleCollider2D:
   m_ObjectHideFlags: 0

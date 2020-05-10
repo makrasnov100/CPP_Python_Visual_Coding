@@ -5,12 +5,14 @@ using Shapes2D;
 
 public class OutgoingInfo
 {
-    NodeIdentity sinkIdentity;
-    string sinkParameter;
-    GameObject connectionArrow;
+    public ConnectionLink sourceIdentity;
+    public ConnectionLink sinkIdentity;
+    public string sinkParameter;
+    public LineRenderer connectionArrow;
 
-    public OutgoingInfo(NodeIdentity sinkIdentity, string sinkParameter, GameObject connectionArrow)
+    public OutgoingInfo(ConnectionLink sourceIdentity, ConnectionLink sinkIdentity, string sinkParameter, LineRenderer connectionArrow)
     {
+        this.sourceIdentity = sourceIdentity;
         this.sinkIdentity = sinkIdentity;
         this.sinkParameter = sinkParameter;
         this.connectionArrow = connectionArrow;
@@ -21,7 +23,7 @@ public class ConnectionLink : MonoBehaviour
 {
     //UI Reference
     public Shape shape;
-
+    public bool isOutput;
     public bool isSelected;
     public NodeIdentity parent;
     public Dictionary<string, OutgoingInfo> outputs = new Dictionary<string, OutgoingInfo>();
@@ -31,15 +33,19 @@ public class ConnectionLink : MonoBehaviour
         isSelected = false;
     }
 
-    public void AddConnection(NodeIdentity newChild)
+    public OutgoingInfo AddConnection(ConnectionLink newChild)
     {
         //output node can only have one parent
-        outputs.Add(newChild.id, new OutgoingInfo(newChild, "NA", makeArrow(parent.transform, newChild.transform)));
+        OutgoingInfo outInfo = new OutgoingInfo(this, newChild, "NA", makeArrow(transform, newChild.transform));
+        outputs.Add(newChild.parent.id, outInfo);
+        parent.connections.Add(outInfo);
+        newChild.parent.connections.Add(outInfo);
+        return outInfo;
     }
 
     public void OnMouseDown()
     {
-        if (IDE_Input_Controller.instance != null)
+        if (IDE_Input_Controller.instance != null && isOutput)
         {
             if (IDE_Input_Controller.instance.sourceNode != null)
             {
@@ -70,18 +76,21 @@ public class ConnectionLink : MonoBehaviour
         shape.settings.fillColor = new Color(.18f, .24f, .8f, 1f);
     }
 
-    public GameObject makeArrow(Transform outLink, Transform inLink)
+    public Material lineMaterial;
+    public LineRenderer makeArrow(Transform outLink, Transform inLink)
     {
-        GameObject result = Instantiate(new GameObject());
-        result.transform.parent = outLink;
-        LineRenderer lr = result.AddComponent<LineRenderer>();
-        lr.SetPositions(new Vector3[] { outLink.position, inLink.position });
+        LineRenderer lr = gameObject.AddComponent<LineRenderer>();
+        Vector3 endPos = new Vector3(inLink.position.x, inLink.position.y, -1);
+        Vector3 startPos = new Vector3(outLink.position.x, outLink.position.y, -1);
+        lr.SetPositions(new Vector3[] { endPos, startPos });
         lr.startColor = Color.red;
         lr.endColor = Color.green;
-        lr.startWidth = 8;
-        lr.endWidth = 8;
-        return result;
+        lr.startWidth = .15f;
+        lr.endWidth = .15f;
+        lr.material = lineMaterial;
+        lr.sortingOrder = 10000;
+        return lr;
     }
 
-    //Create coroutine that draws line between mouse and selcted output node?
+    //Create coroutine that draws line between mouse and selected output node?
 }
