@@ -1,22 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using UnityEngine;
 
-public class InputSource 
-{
-    string functionParameter = "";
-    string inputMemberName = "";
-    public InputSource(string functionParameter, string inputMemberName)
-    {
-        this.functionParameter = functionParameter;
-        this.inputMemberName = inputMemberName;
-    }
-}
 
 public abstract class BaseFunction
-{
-    protected Dictionary<InputSource, NodeIdentity> inputNodes = new Dictionary<InputSource, NodeIdentity>();
-
-    public abstract void performAction();
-
+{ 
+    public abstract bool performAction(NodeIdentity node, out string output);
 }

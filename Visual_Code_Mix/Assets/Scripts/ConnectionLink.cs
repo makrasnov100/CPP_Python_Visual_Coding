@@ -10,6 +10,9 @@ public class OutgoingInfo
     public string sinkParameter;
     public LineRenderer connectionArrow;
 
+    public string outputVal;
+    public bool isComputed = false;
+
     public OutgoingInfo(ConnectionLink sourceIdentity, ConnectionLink sinkIdentity, string sinkParameter, LineRenderer connectionArrow)
     {
         this.sourceIdentity = sourceIdentity;

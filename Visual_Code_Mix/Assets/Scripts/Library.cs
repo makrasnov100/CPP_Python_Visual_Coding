@@ -9,7 +9,6 @@ public class Library : MonoBehaviour
     public static Library instance;
     public Dictionary<string, BaseFunction> functions;
 
-
     void Awake()
     {
         if (instance)
@@ -25,7 +24,7 @@ public class Library : MonoBehaviour
     private void Start()
     {
         functions = new Dictionary<string, BaseFunction>();
-        functions.Add("print", new printValue());
+        functions.Add("print", new PrintValue());
     }
 
 }

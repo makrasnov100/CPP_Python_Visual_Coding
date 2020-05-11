@@ -23,7 +23,7 @@ public class IDE_Input_Controller : MonoBehaviour
 
 
     //Node map
-    Dictionary<string, NodeIdentity> nodes = new Dictionary<string, NodeIdentity>();
+    public Dictionary<string, NodeIdentity> nodes = new Dictionary<string, NodeIdentity>();
 
 
     private void Awake()
@@ -42,12 +42,20 @@ public class IDE_Input_Controller : MonoBehaviour
         }
     }
 
+    public GameObject debugTarget;
     IEnumerator doubleClickCooldown()
     {
         currentClicks += 1;
         if (currentClicks >= 2)
         {
-            RaycastHit2D hit = Physics2D.Raycast(mainCamera.ScreenToWorldPoint(Input.mousePosition), -Vector2.up);
+            Vector3 groundPos = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10.0f));
+            Vector3 mouseFloatPos = new Vector3(groundPos.x, groundPos.y, -10);
+            Ray ray = new Ray(mouseFloatPos, Vector3.forward);
+            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, 50);
+
+            //Draw debug position (if needed)
+            //Instantiate(debugTarget, groundPos, Quaternion.identity, gameObject.transform);
+
             //Refernce: https://docs.unity3d.com/ScriptReference/Physics2D.Raycast.html
             if (hit.collider != null)
             {
@@ -58,7 +66,7 @@ public class IDE_Input_Controller : MonoBehaviour
             }
             else //didn't hit anything (creating new node)
             {
-                createNewNode();
+                createNewNode(groundPos);
             }
             currentClicks = 0;
             StopAllCoroutines();
@@ -73,9 +81,9 @@ public class IDE_Input_Controller : MonoBehaviour
 
 
     //[NODE RELATED]
-    void createNewNode()
+    void createNewNode(Vector3 pos)
     {
-        GameObject curNode = Instantiate(genericNode, mainCamera.ScreenToWorldPoint(Input.mousePosition), Quaternion.identity, gameObject.transform);
+        GameObject curNode = Instantiate(genericNode, pos, Quaternion.identity, gameObject.transform);
         NodeIdentity curIdentity = curNode.GetComponent<NodeIdentity>();
         curNode.transform.position = new Vector3(curNode.transform.position.x, curNode.transform.position.y, 0);
         string nodeId = randomString(8);
@@ -84,7 +92,6 @@ public class IDE_Input_Controller : MonoBehaviour
             nodeId = randomString(8);
         }
         curIdentity.setID(nodeId);
-
         nodes.Add(nodeId, curIdentity);
     }
 

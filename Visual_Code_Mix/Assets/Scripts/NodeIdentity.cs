@@ -11,7 +11,8 @@ public enum FunctionType {none, cpp, python, visual}
 public class NodeIdentity : MonoBehaviour
 {
     //Instance variables
-    public List<OutgoingInfo> connections = new List<OutgoingInfo>(); 
+    public List<OutgoingInfo> connections = new List<OutgoingInfo>();
+    public List<string> arguments;
 
     //UI references
     public Shape nodeShape;
@@ -26,7 +27,9 @@ public class NodeIdentity : MonoBehaviour
     public string nodeName { get; set; }
     public string nodeValue { get; set; }
     public FunctionType funcType { get; set; }
-    public BaseFunction functionValue { get; set; }
+    //public BaseFunction functionValue { get; set; }
+
+
 
     private void Start()
     {
@@ -92,7 +95,11 @@ public class NodeIdentity : MonoBehaviour
                 else
                 {
                     if (Library.instance.functions.ContainsKey(inputValueStr[i]))
+                    {
                         nodeName = inputValueStr[i];
+                        funcType = FunctionType.visual;
+                        //functionValue = (Library.instance.functions[inputValueStr[i]])();
+                    }
                 }
             }
             else if (inputType[i] == InputType.value)
@@ -166,7 +173,6 @@ public class NodeIdentity : MonoBehaviour
         }
     }
 
-
     public override string ToString()
     {
         if (nodeType == NodeType.none)
@@ -175,5 +181,37 @@ public class NodeIdentity : MonoBehaviour
             return nodeValue;
         else 
             return nodeType.ToString().ToUpper()[0] + nodeType.ToString().Substring(1) + " Node";
+    }
+
+    public bool computeNodeOutput(out string output)
+    {
+        if (nodeType == NodeType.data)
+        {
+            output = nodeValue;
+        }
+        else if (nodeType == NodeType.function)
+        {
+            if (Library.instance != null && Library.instance.functions.ContainsKey(nodeName))
+            {
+                return Library.instance.functions[nodeName].performAction(this, out output);
+            }
+            else 
+            {
+                output = "";
+                return false;
+            }
+        }
+        else
+        {
+            output = "";
+            return false;
+        }
+
+        return true;
+    }
+
+    public void setArguments(List<string> arguments)
+    {
+        this.arguments = arguments;
     }
 }
