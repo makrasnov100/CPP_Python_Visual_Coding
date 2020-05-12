@@ -158,7 +158,7 @@ public class NodeIdentity : MonoBehaviour
         }
         label.text = nodeText;
         outputHandle.SetActive(nodeText.Contains(" = "));
-        inputHandle.SetActive(nodeType == NodeType.function);
+        inputHandle.SetActive(nodeType == NodeType.function && nodeName != "");
 
         //determine the outputs posible (if any)
         //ad them to the all possible values

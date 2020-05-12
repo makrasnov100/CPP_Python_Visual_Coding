@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class IDE_Input_Controller : MonoBehaviour
 {
@@ -56,7 +57,6 @@ public class IDE_Input_Controller : MonoBehaviour
             //Draw debug position (if needed)
             //Instantiate(debugTarget, groundPos, Quaternion.identity, gameObject.transform);
 
-            //Refernce: https://docs.unity3d.com/ScriptReference/Physics2D.Raycast.html
             if (hit.collider != null)
             {
                 if (hit.collider.gameObject.tag == "NodeConnectIn")
@@ -77,7 +77,6 @@ public class IDE_Input_Controller : MonoBehaviour
             currentClicks -= 1;
         }
     }
-
 
 
     //[NODE RELATED]

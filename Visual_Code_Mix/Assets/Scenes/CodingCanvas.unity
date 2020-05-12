@@ -1187,7 +1187,7 @@ GameObject:
   - component: {fileID: 1141214120}
   - component: {fileID: 1141214121}
   m_Layer: 0
-  m_Name: New Sprite
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1798,6 +1798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1696229804}
   zoomSensitivity: 10
+  cameraMovementSmoothing: 0.45
 --- !u!1 &1722998676
 GameObject:
   m_ObjectHideFlags: 0
