@@ -4,21 +4,23 @@ using UnityEngine;
 using Shapes2D;
 using TMPro;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.MemoryProfiler;
 
 public enum NodeType{none,data,selection,loop,function}
 public enum DataType {noneT, intT, doubleT,stringT,boolT}
 public enum FunctionType {none, cpp, python, visual}
 public class NodeIdentity : MonoBehaviour
 {
-    //Instance variables
-    public List<OutgoingInfo> connections = new List<OutgoingInfo>();
-    public List<string> arguments;
+    //Instance variables (if no connections then no values here)
+    // string - parameter name, list of associated connections
+    public Dictionary<string, List<OutgoingInfo>> connectionsIn = new Dictionary<string, List<OutgoingInfo>>();
+    public Dictionary<string, List<OutgoingInfo>> connectionsOut = new Dictionary<string, List<OutgoingInfo>>();
+    public Dictionary<string, ConnectionLink> linksIn = new Dictionary<string, ConnectionLink>();
+    public Dictionary<string, ConnectionLink> linksOut = new Dictionary<string, ConnectionLink>();
 
     //UI references
     public Shape nodeShape;
     public TMP_Text label;
-    public GameObject outputHandle;
-    public GameObject inputHandle;
 
     //Node settings;
     public string id = "";
@@ -27,9 +29,10 @@ public class NodeIdentity : MonoBehaviour
     public string nodeName { get; set; }
     public string nodeValue { get; set; }
     public FunctionType funcType { get; set; }
+
+    List<string> inputParameters = new List<string>();
+    List<string> outputParameters = new List<string>();
     //public BaseFunction functionValue { get; set; }
-
-
 
     private void Start()
     {
@@ -49,6 +52,8 @@ public class NodeIdentity : MonoBehaviour
     {
         if (level <= 2)
         {
+            inputParameters.Clear();
+            outputParameters.Clear();
             dataType = DataType.noneT;
             funcType = FunctionType.none;
             nodeName = "";
@@ -98,7 +103,6 @@ public class NodeIdentity : MonoBehaviour
                     {
                         nodeName = inputValueStr[i];
                         funcType = FunctionType.visual;
-                        //functionValue = (Library.instance.functions[inputValueStr[i]])();
                     }
                 }
             }
@@ -157,8 +161,18 @@ public class NodeIdentity : MonoBehaviour
             }
         }
         label.text = nodeText;
-        outputHandle.SetActive(nodeText.Contains(" = "));
-        inputHandle.SetActive(nodeType == NodeType.function && nodeName != "");
+
+        if (nodeType == NodeType.data && nodeText.Contains(" = "))
+        {
+            inputParameters.Clear();
+            outputParameters.Add("dataVal");
+        }
+        else if (nodeType == NodeType.function && nodeName != "")
+        {
+            if(Library.instance && Library.instance.functions.ContainsKey(nodeName))
+                Library.instance.functions[nodeName].getConnectionInfo(out inputParameters, out outputParameters);
+        }
+        UpdateShownConnectionLinks();
 
         //determine the outputs posible (if any)
         //ad them to the all possible values
@@ -170,6 +184,129 @@ public class NodeIdentity : MonoBehaviour
         foreach (ConnectionLink output in outputs)
         {
             output.Deselect();
+        }
+    }
+
+    //UpdateShownConnectionLinks: shows only those connections that are currently 
+    //avaiable for the node type selected
+
+    //Settings for layout
+    public float spacingBetweenLinks;
+    public float paddingSides;
+    //Required input & output link prefabs
+    public GameObject inputLink;
+    public GameObject outputLink;
+    void UpdateShownConnectionLinks()
+    {
+        //get dimensions
+        float startY = .3f;
+
+        //update shown inputs (left side)
+        for (int i = 0; i < inputParameters.Count; i++)
+        {
+            //Modify the position of shown input link
+            Vector3 newLinkPos = Vector3.zero;
+            newLinkPos.x = -.5f + paddingSides;
+            newLinkPos.y = startY + (i * spacingBetweenLinks);
+
+            //input already created
+            if (connectionsIn.ContainsKey(inputParameters[i]))
+            {
+                linksIn[inputParameters[i]].transform.localPosition = newLinkPos;
+
+                //Modify the visibility of link
+                linksIn[inputParameters[i]].gameObject.SetActive(true);
+
+                //Modify visibility of all lines attached to the link
+                foreach (OutgoingInfo info in connectionsIn[inputParameters[i]])
+                {
+                    info.connectionArrow.gameObject.SetActive(true);
+                }
+            }
+            else //input not yet created
+            {
+                //Create input object
+                GameObject curInputLink = Instantiate(inputLink);
+
+                //Add to correct parent
+                curInputLink.transform.SetParent(gameObject.transform);
+
+                //Setup all variables and position
+                ConnectionLink curLinkScript = curInputLink.GetComponent<ConnectionLink>();
+                curLinkScript.ConnectionLinkSetup(this, inputParameters[i]);
+                curInputLink.transform.localPosition = newLinkPos;
+
+                //Add finished node to list of created parameters (no connections so far)
+                connectionsIn.Add(inputParameters[i], new List<OutgoingInfo>());
+                linksIn.Add(inputParameters[i], curLinkScript);
+            }
+        }
+
+        //update shown outputs (right side)
+        for (int i = 0; i < outputParameters.Count; i++)
+        {
+            //Modify the position of shown output link
+            Vector3 newLinkPos = Vector3.zero;
+            newLinkPos.x = .5f - paddingSides;
+            newLinkPos.y = startY + (i * spacingBetweenLinks);
+
+            //output already created
+            if (connectionsOut.ContainsKey(outputParameters[i]))
+            {
+                linksOut[outputParameters[i]].transform.localPosition = newLinkPos;
+
+                //Modify the visibility of link
+                linksOut[outputParameters[i]].gameObject.SetActive(true);
+
+                //Modify visibility of all lines attached to the link
+                foreach (OutgoingInfo info in connectionsOut[outputParameters[i]])
+                {
+                    info.connectionArrow.gameObject.SetActive(true);
+                }
+            }
+            else //input not yet created
+            {
+                //Create input object
+                GameObject curOutputLink = Instantiate(outputLink);
+
+                //Add to correct parent
+                curOutputLink.transform.SetParent(gameObject.transform);
+
+                //Setup all variables and position
+                ConnectionLink curLinkScript = curOutputLink.GetComponent<ConnectionLink>();
+                curLinkScript.ConnectionLinkSetup(this, outputParameters[i]);
+                curOutputLink.transform.localPosition = newLinkPos;
+
+                //Add finished node to list of created parameters (no connections so far)
+                connectionsOut.Add(outputParameters[i], new List<OutgoingInfo>());
+                linksOut.Add(outputParameters[i], curLinkScript);
+            }
+        }
+
+        //Hide all unused input links (TODO make more efficient)
+        foreach (KeyValuePair<string, List<OutgoingInfo>> link in connectionsIn)
+        {
+            if (!inputParameters.Contains(link.Key))
+            {
+                linksIn[link.Key].gameObject.SetActive(false);
+                foreach (OutgoingInfo connection in connectionsIn[link.Key])
+                {
+                    connection.connectionArrow.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        //Hide all unused output links (TODO make more efficient)
+        foreach (KeyValuePair<string, List<OutgoingInfo>> link in connectionsOut)
+        {
+            if (!outputParameters.Contains(link.Key))
+            {
+                linksOut[link.Key].gameObject.SetActive(false);
+                foreach (OutgoingInfo connection in connectionsOut[link.Key])
+                {
+                    connection.connectionArrow.gameObject.SetActive(false);
+                }
+            }
         }
     }
 
@@ -210,8 +347,14 @@ public class NodeIdentity : MonoBehaviour
         return true;
     }
 
-    public void setArguments(List<string> arguments)
-    {
-        this.arguments = arguments;
-    }
+    //public void setArguments(string parameterName, List<string> arguments)
+    //{
+    //    if (inputParameters.Contains(parameterName))
+    //    {
+    //        if (arguments.Contains(parameterName))
+    //            this.arguments[parameterName] = arguments;
+    //        else 
+    //            this.arguments.Add(parameterName, arguments);
+    //    }
+    //}
 }

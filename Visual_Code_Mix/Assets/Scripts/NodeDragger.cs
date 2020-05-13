@@ -8,10 +8,8 @@ public class NodeDragger : MonoBehaviour
 {
     Camera mainCam;
     public SpriteRenderer spriteRender;
-    int sortingOrder = 0;
-    int sortingOrderText = 0;
-    int sortingOrderConnectionPoints = 0;
-
+    int sortingOrderFG = 0;
+    int sortingOrderBG = 0;
 
     Vector3 startDragPos = Vector3.zero;
     bool isBeingDragged = false;
@@ -24,35 +22,39 @@ public class NodeDragger : MonoBehaviour
     //[MOUSE EVENTS FUNCTIONS]
     //UI References for sorting order
     public MeshRenderer nodeText;
-    public SpriteRenderer nodeInput;
-    public SpriteRenderer nodeOutput;
     private void OnMouseDown()
     {
         startDragPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
 
         //Making all node content apear on top of other nodes
-        sortingOrder = spriteRender.sortingOrder;
-        sortingOrderText = nodeText.sortingOrder;
-        sortingOrderConnectionPoints = nodeInput.sortingOrder;
+        sortingOrderBG = spriteRender.sortingOrder;
+        sortingOrderFG = nodeText.sortingOrder;
         spriteRender.sortingOrder = 100;
         nodeText.sortingOrder = 101;
-        nodeInput.sortingOrder = 102;
-        nodeOutput.sortingOrder = 102;
-
+        setLinksOrdering(101);
         isBeingDragged = true;
         selectNode();
     }
 
     private void OnMouseUp()
     {
-        //Placing node wher it was before in terms of sortin
-        spriteRender.sortingOrder = sortingOrder;
-        nodeText.sortingOrder = sortingOrderText;
-        nodeInput.sortingOrder = sortingOrderConnectionPoints;
-        nodeOutput.sortingOrder = sortingOrderConnectionPoints;
-        spriteRender.sortingOrder = sortingOrder;
-
+        //Placing node where it was before in terms of sorting
+        spriteRender.sortingOrder = sortingOrderBG;
+        nodeText.sortingOrder = sortingOrderFG;
+        setLinksOrdering(sortingOrderFG);
         isBeingDragged = false;
+    }
+
+    void setLinksOrdering(int orderingNum)
+    {
+        foreach (ConnectionLink link in nodeIdentity.linksIn.Values)
+        {
+            link.gameObject.GetComponent<SpriteRenderer>().sortingOrder = orderingNum;
+        }
+        foreach (ConnectionLink link in nodeIdentity.linksOut.Values)
+        {
+            link.gameObject.GetComponent<SpriteRenderer>().sortingOrder = orderingNum;
+        }
     }
 
     //[NODE SELECTION]
@@ -93,45 +95,24 @@ public class NodeDragger : MonoBehaviour
     {
         transform.position = transform.position + (mainCam.ScreenToWorldPoint(Input.mousePosition) - startDragPos);
         startDragPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+
         //Update the attached lines of dragged nodes
-        foreach (OutgoingInfo connection in nodeIdentity.connections)
+        foreach (KeyValuePair<string, List<OutgoingInfo>> link in nodeIdentity.connectionsIn)
         {
-            bool isSourceOfConnection = connection.sourceIdentity.parent.id == nodeIdentity.id;
-            if (isSourceOfConnection)
-            {
-                Vector3 newPos = new Vector3(connection.sourceIdentity.transform.position.x, connection.sourceIdentity.transform.position.y, -1);
-                connection.connectionArrow.SetPosition(1, newPos);
-            }
-            else
+            foreach (OutgoingInfo connection in link.Value)
             {
                 Vector3 newPos = new Vector3(connection.sinkIdentity.transform.position.x, connection.sinkIdentity.transform.position.y, -1);
                 connection.connectionArrow.SetPosition(0, newPos);
             }
         }
 
-
-        //if (IDE_Executioner.instance)
-        //{
-        //    if (IDE_Executioner.instance.connectionsOut.ContainsKey(nodeIdentity.id))
-        //    {
-        //        foreach (KeyValuePair<string, OutgoingInfo> connection in IDE_Executioner.instance.connectionsOut[nodeIdentity.id])
-        //        {
-        //            connection.Value.
-        //        }
-        //    }
-        //    if (IDE_Executioner.instance.connectionsIn.ContainsKey(nodeIdentity.id))
-        //    {
-        //        foreach (KeyValuePair<string, OutgoingInfo> connection in IDE_Executioner.instance.connectionsIn[nodeIdentity.id])
-        //        {
-
-        //        }
-        //    }
-        //}
-        //else
-        //{
-
-        //}
+        foreach (KeyValuePair<string, List<OutgoingInfo>> link in nodeIdentity.connectionsOut)
+        {
+            foreach (OutgoingInfo connection in link.Value)
+            {
+                Vector3 newPos = new Vector3(connection.sourceIdentity.transform.position.x, connection.sourceIdentity.transform.position.y, -1);
+                connection.connectionArrow.SetPosition(1, newPos);
+            }
+        }
     }
-
-
 }

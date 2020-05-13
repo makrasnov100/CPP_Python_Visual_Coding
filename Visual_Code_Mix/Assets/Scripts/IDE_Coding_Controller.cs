@@ -74,7 +74,7 @@ public class IDE_Coding_Controller : MonoBehaviour
             parameters = new List<InputType>() { InputType.dataType, InputType.name, InputType.value };
             if (targetNode.dataType != DataType.noneT)
             {
-                curNodeVal += " " + targetNode.dataType.ToString().Substring(0, targetNode.dataType.ToString().Length - 1);
+                curNodeVal += targetNode.dataType.ToString().Substring(0, targetNode.dataType.ToString().Length - 1);
                 if (targetNode.nodeName != "")
                 {
                     curNodeVal += " " + targetNode.nodeName;

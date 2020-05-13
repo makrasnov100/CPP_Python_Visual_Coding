@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Shapes2D;
+using JetBrains.Annotations;
 
 public class OutgoingInfo
 {
     public ConnectionLink sourceIdentity;
     public ConnectionLink sinkIdentity;
-    public string sinkParameter;
+
     public LineRenderer connectionArrow;
 
     public string outputVal;
     public bool isComputed = false;
 
-    public OutgoingInfo(ConnectionLink sourceIdentity, ConnectionLink sinkIdentity, string sinkParameter, LineRenderer connectionArrow)
+    public OutgoingInfo(ConnectionLink sourceIdentity, ConnectionLink sinkIdentity, LineRenderer connectionArrow)
     {
         this.sourceIdentity = sourceIdentity;
         this.sinkIdentity = sinkIdentity;
-        this.sinkParameter = sinkParameter;
         this.connectionArrow = connectionArrow;
     }
 }
@@ -28,22 +28,27 @@ public class ConnectionLink : MonoBehaviour
     public Shape shape;
     public bool isOutput;
     public bool isSelected;
+    public string paramName;
     public NodeIdentity parent;
-    public Dictionary<string, OutgoingInfo> outputs = new Dictionary<string, OutgoingInfo>();
 
     private void Start()
     {
         isSelected = false;
     }
 
-    public OutgoingInfo AddConnection(ConnectionLink newChild)
+    public void ConnectionLinkSetup(NodeIdentity parent, string paramName)
     {
-        //output node can only have one parent
-        OutgoingInfo outInfo = new OutgoingInfo(this, newChild, "NA", makeArrow(transform, newChild.transform));
-        outputs.Add(newChild.parent.id, outInfo);
-        parent.connections.Add(outInfo);
-        newChild.parent.connections.Add(outInfo);
-        return outInfo;
+        this.parent = parent;
+        this.paramName = paramName;
+    }
+
+    public void AddConnection(ConnectionLink newChild)
+    {
+        //Create and store outgoing information
+        OutgoingInfo outInfo = new OutgoingInfo(this, newChild, makeArrow(transform, newChild.transform));
+
+        parent.connectionsOut[paramName].Add(outInfo);
+        newChild.parent.connectionsIn[newChild.paramName].Add(outInfo);
     }
 
     public void OnMouseDown()

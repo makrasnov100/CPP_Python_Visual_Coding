@@ -112,10 +112,14 @@ public class IDE_Input_Controller : MonoBehaviour
         if (sourceNode == null || sourceNode.parent == null)
             return;
         
-        //Keep track of the new connection visual and in code
-        OutgoingInfo outInfo = sourceNode.AddConnection(sinkNode);
+        //Add connection to the nodes theselves
+        sourceNode.AddConnection(sinkNode);
+        //Add interconnected node to the computed node list
         if (IDE_Executioner.instance)
-            IDE_Executioner.instance.addConnection(sourceNode.parent, outInfo);
+        {
+            IDE_Executioner.instance.updateComputedNodesOnAddedConnection(sourceNode, sinkNode);
+        }
+
 
         sourceNode.Deselect();
         sourceNode = null;

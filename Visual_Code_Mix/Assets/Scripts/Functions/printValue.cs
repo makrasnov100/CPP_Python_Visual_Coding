@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+//Argument List:
+//INPUTS:
+// printValues - takes in any number of connections and prints them seperated by a comma
+
 
 //This function prints all node arguments that are passed in combined and seperated by commans
 //Example Arg1: a, Arg2: b, Arg3: c -> a,b,c is printed
+
 public class PrintValue : BaseFunction
 {
     public override bool performAction(NodeIdentity node, out string output)
@@ -13,19 +18,31 @@ public class PrintValue : BaseFunction
         output = "";
 
         //Check if cannot get input arguments (exit if so)
-        if (!node)
+        if (!node || !node.connectionsIn.ContainsKey("printValues"))
             return false;
 
         //TODO: implement on screen output
         string message = "";
-        foreach (string arg in node.arguments)
+        foreach (OutgoingInfo arg in node.connectionsIn["printValues"])
         {
-            message += arg + ",";
+            if (!arg.isComputed)
+            {
+                Debug.LogError("Connection value used before it was computed!");
+                return false;
+            }
+            message += arg.outputVal + ",";
         }
+
         message = message.Substring(0, message.Length - 1);
 
         Debug.Log(message);
 
         return true;
+    }
+
+    public override void getConnectionInfo(out List<string> inputs, out List<string> outputs)
+    {
+        inputs = new List<string>() {"printValues"};
+        outputs = new List<string>();
     }
 }
