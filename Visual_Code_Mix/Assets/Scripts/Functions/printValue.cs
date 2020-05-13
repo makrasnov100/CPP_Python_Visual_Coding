@@ -13,10 +13,8 @@ using UnityEngine;
 
 public class PrintValue : BaseFunction
 {
-    public override bool performAction(NodeIdentity node, out string output)
+    public override bool performAction(NodeIdentity node)
     {
-        output = "";
-
         //Check if cannot get input arguments (exit if so)
         if (!node || !node.connectionsIn.ContainsKey("printValues"))
             return false;

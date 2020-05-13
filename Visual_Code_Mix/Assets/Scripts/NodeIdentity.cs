@@ -30,9 +30,8 @@ public class NodeIdentity : MonoBehaviour
     public string nodeValue { get; set; }
     public FunctionType funcType { get; set; }
 
-    List<string> inputParameters = new List<string>();
-    List<string> outputParameters = new List<string>();
-    //public BaseFunction functionValue { get; set; }
+    public List<string> inputParameters = new List<string>();
+    public List<string> outputParameters = new List<string>();
 
     private void Start()
     {
@@ -205,7 +204,7 @@ public class NodeIdentity : MonoBehaviour
         for (int i = 0; i < inputParameters.Count; i++)
         {
             //Modify the position of shown input link
-            Vector3 newLinkPos = Vector3.zero;
+            Vector3 newLinkPos = -Vector3.one;
             newLinkPos.x = -.5f + paddingSides;
             newLinkPos.y = startY + (i * spacingBetweenLinks);
 
@@ -246,7 +245,7 @@ public class NodeIdentity : MonoBehaviour
         for (int i = 0; i < outputParameters.Count; i++)
         {
             //Modify the position of shown output link
-            Vector3 newLinkPos = Vector3.zero;
+            Vector3 newLinkPos = -Vector3.one;
             newLinkPos.x = .5f - paddingSides;
             newLinkPos.y = startY + (i * spacingBetweenLinks);
 
@@ -320,41 +319,49 @@ public class NodeIdentity : MonoBehaviour
             return nodeType.ToString().ToUpper()[0] + nodeType.ToString().Substring(1) + " Node";
     }
 
-    public bool computeNodeOutput(out string output)
+    public bool computeNodeOutput()
     {
-        if (nodeType == NodeType.data)
+        bool result = false;
+
+        if (Library.instance != null)
         {
-            output = nodeValue;
-        }
-        else if (nodeType == NodeType.function)
-        {
-            if (Library.instance != null && Library.instance.functions.ContainsKey(nodeName))
+            if (nodeType == NodeType.data && Library.instance.functions.ContainsKey("dataNode"))
             {
-                return Library.instance.functions[nodeName].performAction(this, out output);
+                result = Library.instance.functions["dataNode"].performAction(this);
             }
-            else 
+            else if (nodeType == NodeType.function && Library.instance.functions.ContainsKey(nodeName))
             {
-                output = "";
+                result = Library.instance.functions[nodeName].performAction(this);
+            }
+        }
+
+        return result;
+    }
+
+    public bool isReadyForCompuation()
+    {
+        foreach (string inputLink in inputParameters)
+        {
+            if (!connectionsIn.ContainsKey(inputLink) || 
+                connectionsIn[inputLink] == null || 
+                connectionsIn[inputLink].Count == 0)
+            {
                 return false;
             }
-        }
-        else
-        {
-            output = "";
-            return false;
         }
 
         return true;
     }
 
-    //public void setArguments(string parameterName, List<string> arguments)
-    //{
-    //    if (inputParameters.Contains(parameterName))
-    //    {
-    //        if (arguments.Contains(parameterName))
-    //            this.arguments[parameterName] = arguments;
-    //        else 
-    //            this.arguments.Add(parameterName, arguments);
-    //    }
-    //}
+    public void clearAllComputations()
+    {
+        foreach (KeyValuePair<string, List<OutgoingInfo>> link in connectionsOut)
+        {
+            foreach (OutgoingInfo connection in link.Value)
+            {
+                connection.isComputed = false;
+                connection.outputVal = "";
+            }
+        }
+    }
 }

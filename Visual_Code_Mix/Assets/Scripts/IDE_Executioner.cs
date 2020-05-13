@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Remoting.Channels;
 using System.Xml.XPath;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class IDE_Executioner : MonoBehaviour
@@ -43,49 +44,66 @@ public class IDE_Executioner : MonoBehaviour
         Debug.Log("Starting with " + startingNodes.Count + " out of " + IDE_Input_Controller.instance.nodes.Count + " nodes!");
         printConnections("Connections at start - ", startingNodes);
 
-        ////Find all sources (nodes with an outgoing connection but no incoming ones)
-        //HashSet<string> completeNodes = new HashSet<string>();
-        //Queue<string> sourceNodes = new Queue<string>();
-        //foreach(KeyValuePair<string, Dictionary<string, OutgoingInfo>> node in connectionsOut)
-        //{
-        //    if(!connectionsIn.ContainsKey(node.Key))
-        //    {
-        //        sourceNodes.Enqueue(node.Key);
-        //    }
-        //}
+        //Begin by quing all source nodes for compuatation, store completed nodes to prevent recomputing them
+        HashSet<string> completeNodes = new HashSet<string>();
+        Queue<string> sourceNodes = new Queue<string>(startingNodes);
 
-        ////Execute program until all nodes visited
-        //while (sourceNodes.Count != 0)
-        //{
-        //    //Execute until need additional info move to next source
-        //    string curNode = sourceNodes.Dequeue();
-        //    //Skip if node was already executed skip it
-        //    if (completeNodes.Contains(curNode))
-        //        continue;
-        //    //Get node output (will fail if not enough inputs are avaliable)
-        //    string curNodeOutput;
-        //    bool isNodeSuccess = IDE_Input_Controller.instance.nodes[curNode].computeNodeOutput(out curNodeOutput);
-        //    if (isNodeSuccess)  //Node output complete
-        //    {
-        //        completeNodes.Add(curNode);
+        //Execute program until all conected nodes visited or a fault reached
+        while (sourceNodes.Count != 0)
+        {
+            //Execute until need additional info move to next source
+            string curNodeId = sourceNodes.Dequeue();
+            //Skip if node was already executed
+            if (completeNodes.Contains(curNodeId))
+                continue;
 
-        //        //If sink node (no outgoing connections) then skip propagating output
-        //        if (!connectionsOut.ContainsKey(curNode)) 
-        //            continue;
+            //Skip if node cannot be found
+            NodeIdentity curNode = null;
+            if (!IDE_Input_Controller.instance.nodes.ContainsKey(curNodeId))
+            {
+                Debug.LogError("A Node was not found in all nodes dictionary! What happened to it?");
+                continue;
+            }
+            else
+                curNode = IDE_Input_Controller.instance.nodes[curNodeId];
 
-        //        foreach (KeyValuePair<string, OutgoingInfo> connection in connectionsOut[curNode])
-        //        {
-        //            connection.Value.outputVal = curNodeOutput;
-        //            connection.Value.isComputed = true;
+            //Get node output (will fail if not enough inputs are avaliable)
+            bool isNodeSuccess = curNode.computeNodeOutput();
+            if (isNodeSuccess)  //Node output complete
+            {
+                completeNodes.Add(curNodeId);
 
-        //            if (!completeNodes.Contains(connection.Key) && isNodeInputCompleted(connection.Key))
-        //            {
-        //                IDE_Input_Controller.instance.nodes[connection.Key].setArguments(getAllInputs(connection.Key));
-        //                sourceNodes.Enqueue(connection.Key);
-        //            }
-        //        }
-        //    }
-        //}
+                //Check all output nodes,
+                // if their incoming connections are satisfied add to queue of source nodes
+                HashSet<string> curCheckNodes = new HashSet<string>();
+                foreach (string activeOutputArg in curNode.outputParameters)
+                {
+                    if (curNode.connectionsOut.ContainsKey(activeOutputArg))
+                    {
+                        foreach (OutgoingInfo connection in curNode.connectionsOut[activeOutputArg])
+                        {
+                            if (!curCheckNodes.Contains(connection.sinkIdentity.parent.id) &&
+                               connection.sinkIdentity.parent.isReadyForCompuation())
+                            {
+                                curCheckNodes.Add(connection.sinkIdentity.parent.id);
+                                sourceNodes.Enqueue(connection.sinkIdentity.parent.id);
+                            }
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                Debug.LogWarning(curNodeId + " - node has failed to compute!");
+            }
+        }
+
+        //Reset all completed nodes output state
+        foreach (string nodeId in completeNodes)
+        {
+            IDE_Input_Controller.instance.nodes[nodeId].clearAllComputations();
+        }
     }
 
     //// isNodeInputCompleted: TRUE if all input nodes connected to this node have their output complete

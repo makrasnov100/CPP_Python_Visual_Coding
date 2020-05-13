@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Boo.Lang;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,7 @@ public class Library : MonoBehaviour
     {
         functions = new Dictionary<string, BaseFunction>();
         functions.Add("print", new PrintValue());
+        functions.Add("dataNode", new DataNode());
     }
 
 }

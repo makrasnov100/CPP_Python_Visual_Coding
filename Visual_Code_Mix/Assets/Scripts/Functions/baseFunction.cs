@@ -8,5 +8,5 @@ public abstract class BaseFunction
 {
     public abstract void getConnectionInfo(out List<string> inputs, out List<string> outputs);
 
-    public abstract bool performAction(NodeIdentity node, out string output);
+    public abstract bool performAction(NodeIdentity node);
 }
