@@ -115,37 +115,6 @@ public class IDE_Executioner : MonoBehaviour
         }
     }
 
-    //// isNodeInputCompleted: TRUE if all input nodes connected to this node have their output complete
-    //bool isNodeInputCompleted(string nodeId)
-    //{
-    //    if (!connectionsIn.ContainsKey(nodeId))
-    //        return false;
-
-    //    foreach (KeyValuePair<string, OutgoingInfo> connection in connectionsIn[nodeId])
-    //    {
-    //        if(!connection.Value.isComputed)
-    //        {
-    //            return false;
-    //        }
-    //    }
-
-    //    return true;
-    //}
-
-    //List<string> getAllInputs(string nodeId)
-    //{
-    //    //TODO: Error handling here
-
-    //    List<string> result = new List<string>();
-
-    //    foreach (KeyValuePair<string, OutgoingInfo> connection in connectionsIn[nodeId])
-    //    {
-    //        result.Add(connection.Value.outputVal);
-    //    }
-
-    //    return result;
-    //}
-
     //[DEBUG]
     void printConnections(string message, IEnumerable<string> nodes)
     {

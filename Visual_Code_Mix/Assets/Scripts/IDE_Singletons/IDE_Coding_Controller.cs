@@ -135,7 +135,7 @@ public class IDE_Coding_Controller : MonoBehaviour
                         else
                             result = Enum.Parse(typeof(NodeType), args[i]);
                     } 
-                    catch (ArgumentException e)
+                    catch
                     {
                         isPass = false;
                     }
@@ -149,7 +149,7 @@ public class IDE_Coding_Controller : MonoBehaviour
                         else
                             result = Enum.Parse(typeof(DataType), args[i]+ "T");
                     }
-                    catch (ArgumentException e)
+                    catch // (ArgumentException e)
                     {
                         isPass = false;
                     }
@@ -163,7 +163,7 @@ public class IDE_Coding_Controller : MonoBehaviour
                         else
                             result = (object)args[i];
                     }
-                    catch (ArgumentException e)
+                    catch
                     {
                         isPass = false;
                     }
@@ -177,7 +177,7 @@ public class IDE_Coding_Controller : MonoBehaviour
                         else
                             result = (object)args[i];
                     }
-                    catch (ArgumentException e)
+                    catch
                     {
                         isPass = false;
                     }
