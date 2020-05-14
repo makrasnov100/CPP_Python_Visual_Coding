@@ -46,7 +46,7 @@ public class NodeIdentity : MonoBehaviour
 
     
     //Level - 1 : clears everything
-    //Level - 2 : clears only node tpye specific items
+    //Level - 2 : clears only node type specific items
     public void clearNode(int level) 
     {
         if (level <= 2)
@@ -173,7 +173,7 @@ public class NodeIdentity : MonoBehaviour
         }
         UpdateShownConnectionLinks();
 
-        //determine the outputs posible (if any)
+        //determine the outputs possible (if any)
         //ad them to the all possible values
     }
 
@@ -206,7 +206,7 @@ public class NodeIdentity : MonoBehaviour
             //Modify the position of shown input link
             Vector3 newLinkPos = -Vector3.one;
             newLinkPos.x = -.5f + paddingSides;
-            newLinkPos.y = startY + (i * spacingBetweenLinks);
+            newLinkPos.y = startY - (i * spacingBetweenLinks);
 
             //input already created
             if (connectionsIn.ContainsKey(inputParameters[i]))
@@ -247,7 +247,7 @@ public class NodeIdentity : MonoBehaviour
             //Modify the position of shown output link
             Vector3 newLinkPos = -Vector3.one;
             newLinkPos.x = .5f - paddingSides;
-            newLinkPos.y = startY + (i * spacingBetweenLinks);
+            newLinkPos.y = startY - (i * spacingBetweenLinks);
 
             //output already created
             if (connectionsOut.ContainsKey(outputParameters[i]))
@@ -345,6 +345,19 @@ public class NodeIdentity : MonoBehaviour
             if (!connectionsIn.ContainsKey(inputLink) || 
                 connectionsIn[inputLink] == null || 
                 connectionsIn[inputLink].Count == 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public bool isASource()
+    {
+        foreach (string inputLink in inputParameters)
+        {
+            if (connectionsIn.ContainsKey(inputLink))
             {
                 return false;
             }

@@ -27,6 +27,7 @@ public class Library : MonoBehaviour
         functions = new Dictionary<string, BaseFunction>();
         functions.Add("print", new PrintValue());
         functions.Add("dataNode", new DataNode());
+        functions.Add("sum", new SumValue());
     }
 
 }

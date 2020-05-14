@@ -9,11 +9,7 @@ public class DataNode : BaseFunction
         if (!node)
             return false;
 
-        foreach (OutgoingInfo connection in node.connectionsOut["dataVal"])
-        {
-            connection.isComputed = true;
-            connection.outputVal = node.nodeValue;
-        }
+        setOutLinkValue(node, "dataVal", node.nodeValue);
 
         return true;
     }

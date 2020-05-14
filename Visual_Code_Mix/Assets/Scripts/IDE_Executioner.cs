@@ -26,7 +26,7 @@ public class IDE_Executioner : MonoBehaviour
     //[BEFORE EXECUTION]
     public void updateComputedNodesOnAddedConnection(ConnectionLink source, ConnectionLink sink)
     {
-        if (!startingNodes.Contains(source.parent.id))
+        if (!startingNodes.Contains(source.parent.id) && source.parent.isASource())
         {
             startingNodes.Add(source.parent.id);
         }
