@@ -29,6 +29,7 @@ public class Library : MonoBehaviour
         functions.Add("dataNode", new DataNode());
         functions.Add("sum", new SumValue());
         functions.Add("select", new SelectValue());
+        functions.Add(">", new IsGreaterValue());
     }
 
 }
