@@ -37,7 +37,7 @@ public class IDE_Input_Controller : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             StartCoroutine(doubleClickCooldown());
         }

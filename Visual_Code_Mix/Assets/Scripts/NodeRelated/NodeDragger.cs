@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class NodeDragger : MonoBehaviour
 {
@@ -24,6 +25,11 @@ public class NodeDragger : MonoBehaviour
     public MeshRenderer nodeText;
     private void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         startDragPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
 
         //Making all node content apear on top of other nodes

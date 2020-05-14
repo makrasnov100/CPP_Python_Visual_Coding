@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
@@ -13,16 +14,19 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         float camZoom = mainCamera.orthographicSize;
-        camZoom -= Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity;
-        mainCamera.orthographicSize = camZoom;
+        if(Input.GetAxis("Mouse ScrollWheel") != 0 && !EventSystem.current.IsPointerOverGameObject())
+        {
+            camZoom -= Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity;
+            mainCamera.orthographicSize = camZoom;
+        }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             initPos = getCameraWorldPos();
             isNodeClicked = checkNodeHit();
         }
 
-        if (!isNodeClicked && Input.GetMouseButton(0))
+        if (!isNodeClicked && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
             UpdateCameraDrag();
     }
 
