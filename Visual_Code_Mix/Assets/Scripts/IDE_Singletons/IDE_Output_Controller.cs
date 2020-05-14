@@ -3,20 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OutputConsoleController : MonoBehaviour
+public class IDE_Output_Controller : MonoBehaviour
 {
+    public static IDE_Output_Controller instance;
+
+    private void Awake()
+    {
+        if (instance)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
 
     //UI References
-    GameObject allOutputUI;
-    GameObject messageHolder;
-    GameObject messagePrefab;
+    public GameObject allOutputUI;
+    public GameObject messageHolder;
+    public GameObject messagePrefab;
 
     //Instance Variables
     List<GameObject> messages = new List<GameObject>();
 
 
     //Message Methods
-    void AddOutput(string msg, OutputMessageType type)
+    public void AddOutput(string msg, OutputMessageType type = OutputMessageType.info)
     {
         //Create message add to list of other outputs
         GameObject curMsgGO = Instantiate(messagePrefab);
@@ -29,7 +43,7 @@ public class OutputConsoleController : MonoBehaviour
         messages.Add(curMsgGO);
     }
 
-    void ClearOutput()
+    public void ClearOutput()
     {
         foreach (GameObject msg in messages)
         {
@@ -38,13 +52,14 @@ public class OutputConsoleController : MonoBehaviour
         messages.Clear();
     }
 
-    void OpenOutput()
+    public void OpenOutput()
     {
         allOutputUI.SetActive(true);
     }
 
-    void CloseOutput()
+    public void CloseOutput()
     {
+        ClearOutput();
         allOutputUI.SetActive(false);
     }
 

@@ -24,14 +24,14 @@ public class SumValue : BaseFunction
         {
             if (!arg.isComputed)
             {
-                Debug.LogError("Connection value used before it was computed!");
+                IDE_Output_Controller.instance.AddOutput("sumValues parameter in sum node (" + node.id + ") used before it was computed!", OutputMessageType.error);
                 return false;
             }
 
             double curTerm;
             if (!double.TryParse(arg.outputVal, out curTerm))
             {
-                Debug.LogError("Sum node was given a non numerical value!");
+                IDE_Output_Controller.instance.AddOutput("Sum node ("+node.id+") was given a non numerical value!", OutputMessageType.error);
                 return false;
             }
             sumOutDouble += curTerm;

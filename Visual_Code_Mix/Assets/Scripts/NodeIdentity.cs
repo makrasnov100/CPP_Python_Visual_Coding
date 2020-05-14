@@ -338,15 +338,24 @@ public class NodeIdentity : MonoBehaviour
         return result;
     }
 
-    public bool isReadyForCompuation()
+    public bool isReadyForComputaion()
     {
         foreach (string inputLink in inputParameters)
         {
-            if (!connectionsIn.ContainsKey(inputLink) || 
-                connectionsIn[inputLink] == null || 
-                connectionsIn[inputLink].Count == 0)
+            if (!connectionsIn.ContainsKey(inputLink) ||
+                connectionsIn[inputLink] == null)
             {
                 return false;
+            }
+            else
+            {
+                foreach (OutgoingInfo connection in connectionsIn[inputLink])
+                {
+                    if (!connection.isComputed)
+                    {
+                        return false;
+                    }
+                }
             }
         }
 

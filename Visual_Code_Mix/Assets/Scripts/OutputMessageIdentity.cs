@@ -23,7 +23,8 @@ public class OutputMessageIdentity : MonoBehaviour
         else
             uiHandle.color = Color.green;
 
-        //reset scale?
+        //reset scale
+        gameObject.transform.localScale = Vector3.one;
 
     }
 }

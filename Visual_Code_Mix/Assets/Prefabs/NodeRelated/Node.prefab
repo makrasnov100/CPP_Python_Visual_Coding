@@ -403,6 +403,8 @@ MonoBehaviour:
   nodeShape: {fileID: 7339066048461634564}
   label: {fileID: 745402350}
   id: 
+  inputParameters: []
+  outputParameters: []
   spacingBetweenLinks: 0.2
   paddingSides: 0.1
   inputLink: {fileID: 2773541908614774936, guid: 13dcc7dccb292c14cba2cf1f4eef5916,

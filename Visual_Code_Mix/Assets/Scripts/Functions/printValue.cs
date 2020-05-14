@@ -25,7 +25,7 @@ public class PrintValue : BaseFunction
         {
             if (!arg.isComputed)
             {
-                Debug.LogError("Connection value used before it was computed!");
+                IDE_Output_Controller.instance.AddOutput("printValues parameter in print node (" + node.id + ") used before it was computed!", OutputMessageType.error);
                 return false;
             }
             message += arg.outputVal + ",";
@@ -33,7 +33,7 @@ public class PrintValue : BaseFunction
 
         message = message.Substring(0, message.Length - 1);
 
-        Debug.Log(message);
+        IDE_Output_Controller.instance.AddOutput(message);
 
         return true;
     }

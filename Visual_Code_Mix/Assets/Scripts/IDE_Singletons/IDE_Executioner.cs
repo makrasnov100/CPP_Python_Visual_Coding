@@ -44,6 +44,16 @@ public class IDE_Executioner : MonoBehaviour
         Debug.Log("Starting with " + startingNodes.Count + " out of " + IDE_Input_Controller.instance.nodes.Count + " nodes!");
         printConnections("Connections at start - ", startingNodes);
 
+        //Show Output Window on every Run
+        IDE_Output_Controller.instance.OpenOutput();
+
+        //Tell user if his her graph is not executable 
+        if (startingNodes.Count == 0)
+        {
+            IDE_Output_Controller.instance.AddOutput("No source nodes, nothing to execute!", OutputMessageType.warning);
+            return;
+        }
+
         //Begin by quing all source nodes for compuatation, store completed nodes to prevent recomputing them
         HashSet<string> completeNodes = new HashSet<string>();
         Queue<string> sourceNodes = new Queue<string>(startingNodes);
@@ -61,7 +71,7 @@ public class IDE_Executioner : MonoBehaviour
             NodeIdentity curNode = null;
             if (!IDE_Input_Controller.instance.nodes.ContainsKey(curNodeId))
             {
-                Debug.LogError("A Node was not found in all nodes dictionary! What happened to it?");
+                IDE_Output_Controller.instance.AddOutput("A Node was not found in all nodes dictionary! What happened to it?", OutputMessageType.warning);
                 continue;
             }
             else
@@ -83,7 +93,7 @@ public class IDE_Executioner : MonoBehaviour
                         foreach (OutgoingInfo connection in curNode.connectionsOut[activeOutputArg])
                         {
                             if (!curCheckNodes.Contains(connection.sinkIdentity.parent.id) &&
-                               connection.sinkIdentity.parent.isReadyForCompuation())
+                               connection.sinkIdentity.parent.isReadyForComputaion())
                             {
                                 curCheckNodes.Add(connection.sinkIdentity.parent.id);
                                 sourceNodes.Enqueue(connection.sinkIdentity.parent.id);
@@ -91,11 +101,10 @@ public class IDE_Executioner : MonoBehaviour
                         }
                     }
                 }
-
             }
             else
             {
-                Debug.LogWarning(curNodeId + " - node has failed to compute!");
+                IDE_Output_Controller.instance.AddOutput(curNodeId + " - node has failed to compute!", OutputMessageType.error);
             }
         }
 
