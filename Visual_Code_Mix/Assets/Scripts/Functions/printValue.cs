@@ -5,7 +5,7 @@ using UnityEngine;
 
 //Argument List:
 //INPUTS:
-// printValues - takes in any number of connections and prints them seperated by a comma
+// show - takes in any number of connections and prints them seperated by a comma
 
 
 //This function prints all node arguments that are passed in combined and seperated by commans
@@ -16,16 +16,16 @@ public class PrintValue : BaseFunction
     public override bool performAction(NodeIdentity node)
     {
         //Check if cannot get input arguments (exit if so)
-        if (!node || !node.connectionsIn.ContainsKey("printValues"))
+        if (!node || !node.connectionsIn.ContainsKey("show"))
             return false;
 
         //TODO: implement on screen output
         string message = "";
-        foreach (OutgoingInfo arg in node.connectionsIn["printValues"])
+        foreach (OutgoingInfo arg in node.connectionsIn["show"])
         {
             if (!arg.isComputed)
             {
-                IDE_Output_Controller.instance.AddOutput("printValues parameter in print node (" + node.id + ") used before it was computed!", OutputMessageType.error);
+                IDE_Output_Controller.instance.AddOutput("show parameter in print node (" + node.id + ") used before it was computed!", OutputMessageType.error);
                 return false;
             }
             message += arg.outputVal + ",";
@@ -40,7 +40,7 @@ public class PrintValue : BaseFunction
 
     public override void getConnectionInfo(out List<string> inputs, out List<string> outputs)
     {
-        inputs = new List<string>() {"printValues"};
+        inputs = new List<string>() {"show"};
         outputs = new List<string>();
     }
 }

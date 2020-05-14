@@ -5,26 +5,26 @@ using UnityEngine;
 
 //Argument List:
 //INPUTS:
-// sumValues - takes in any number of connections and sums them up (need to be numerical values)
+// add - takes in any number of connections and sums them up (need to be numerical values)
 //OUTPUTS:
-// sumOutFloat - the sum with decimals saved
-// sumOutInt - the sum cast to an int at the end
+// sumFlt - the sum with decimals saved
+// sumInt - the sum cast to an int at the end
 
 public class SumValue : BaseFunction
 {
     public override bool performAction(NodeIdentity node)
     {
         //Check if cannot get input arguments (exit if so)
-        if (!node || !node.connectionsIn.ContainsKey("sumValues"))
+        if (!node || !node.connectionsIn.ContainsKey("add"))
             return false;
 
         double sumOutDouble = 0;
         int sumOutInt = 0;
-        foreach (OutgoingInfo arg in node.connectionsIn["sumValues"])
+        foreach (OutgoingInfo arg in node.connectionsIn["add"])
         {
             if (!arg.isComputed)
             {
-                IDE_Output_Controller.instance.AddOutput("sumValues parameter in sum node (" + node.id + ") used before it was computed!", OutputMessageType.error);
+                IDE_Output_Controller.instance.AddOutput("add parameter in sum node (" + node.id + ") used before it was computed!", OutputMessageType.error);
                 return false;
             }
 
@@ -38,15 +38,15 @@ public class SumValue : BaseFunction
         }
 
         sumOutInt = (int)sumOutDouble;
-        setOutLinkValue(node, "sumOutputDouble", sumOutDouble.ToString());
-        setOutLinkValue(node, "sumOutputInt", sumOutInt.ToString());
+        setOutLinkValue(node, "sumFlt", sumOutDouble.ToString());
+        setOutLinkValue(node, "sumInt", sumOutInt.ToString());
 
         return true;
     }
 
     public override void getConnectionInfo(out List<string> inputs, out List<string> outputs)
     {
-        inputs = new List<string>() { "sumValues" };
-        outputs = new List<string>() { "sumOutputDouble", "sumOutputInt"};
+        inputs = new List<string>() { "add" };
+        outputs = new List<string>() { "sumFlt", "sumInt"};
     }
 }

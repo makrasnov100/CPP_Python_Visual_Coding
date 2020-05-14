@@ -9,14 +9,14 @@ public class DataNode : BaseFunction
         if (!node)
             return false;
 
-        setOutLinkValue(node, "dataVal", node.nodeValue);
+        setOutLinkValue(node, "data", node.nodeValue);
 
         return true;
     }
 
     public override void getConnectionInfo(out List<string> inputs, out List<string> outputs)
     {
-        inputs = new List<string>() { "printValues" };
-        outputs = new List<string>();
+        inputs = new List<string>() {};
+        outputs = new List<string>() {"data"};
     }
 }

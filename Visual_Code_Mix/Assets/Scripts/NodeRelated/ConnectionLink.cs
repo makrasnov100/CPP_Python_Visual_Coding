@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Shapes2D;
 using JetBrains.Annotations;
+using UnityEngine.UI;
+using TMPro;
 
 public class OutgoingInfo
 {
@@ -26,6 +28,9 @@ public class ConnectionLink : MonoBehaviour
 {
     //UI Reference
     public Shape shape;
+    public TMP_Text linkName;
+
+    //Instance variables
     public bool isOutput;
     public bool isSelected;
     public string paramName;
@@ -40,6 +45,7 @@ public class ConnectionLink : MonoBehaviour
     {
         this.parent = parent;
         this.paramName = paramName;
+        linkName.text = paramName;
     }
 
     public void AddConnection(ConnectionLink newChild)

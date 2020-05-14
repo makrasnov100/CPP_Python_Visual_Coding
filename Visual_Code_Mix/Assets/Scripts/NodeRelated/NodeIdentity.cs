@@ -164,7 +164,7 @@ public class NodeIdentity : MonoBehaviour
         if (nodeType == NodeType.data && nodeText.Contains(" = "))
         {
             inputParameters.Clear();
-            outputParameters.Add("dataVal");
+            outputParameters.Add("data");
         }
         else if (nodeType == NodeType.function && nodeName != "")
         {

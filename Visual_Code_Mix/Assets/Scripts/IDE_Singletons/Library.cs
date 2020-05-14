@@ -28,6 +28,7 @@ public class Library : MonoBehaviour
         functions.Add("print", new PrintValue());
         functions.Add("dataNode", new DataNode());
         functions.Add("sum", new SumValue());
+        functions.Add("select", new SelectValue());
     }
 
 }
