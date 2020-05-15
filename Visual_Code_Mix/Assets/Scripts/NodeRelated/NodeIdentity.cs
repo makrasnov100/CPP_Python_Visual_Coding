@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Shapes2D;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.MemoryProfiler;
 
 public enum NodeType{none,data,selection,loop,function}
 public enum DataType {noneT, intT, doubleT,stringT,boolT}
@@ -329,11 +327,31 @@ public class NodeIdentity : MonoBehaviour
 
     public void deleteNode()
     {
-        //Remove all links with this node on others (node identities)
+        //Remove all links with this node to others (node identities)
+        // - outgoing
+        foreach(KeyValuePair<string, List<OutgoingInfo>> link in connectionsOut)
+        {
+            foreach (OutgoingInfo connection in link.Value)
+            {
+                connection.sinkIdentity.parent.connectionsIn[connection.sinkIdentity.paramName].Remove(connection);
+                Destroy(connection.connectionArrow.gameObject);
+            }
+        }
+        // - incoming
+        foreach (KeyValuePair<string, List<OutgoingInfo>> link in connectionsIn)
+        {
+            foreach (OutgoingInfo connection in link.Value)
+            {
+                connection.sourceIdentity.parent.connectionsOut[connection.sourceIdentity.paramName].Remove(connection);
+                Destroy(connection.connectionArrow.gameObject);
+            }
+        }
 
         //Remove this node as start node if it one in the executioner
+        IDE_Executioner.instance.updateComputedNodesOnDeleteNode(this);
 
-
+        //Destroy this node object
+        Destroy(gameObject);
     }
 
     public bool computeNodeOutput()

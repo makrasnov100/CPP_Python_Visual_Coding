@@ -26,6 +26,14 @@ public class IDE_Coding_Controller : MonoBehaviour
             updateTarget(targetNode);
             simpleCodeInputField.ActivateInputField();
         }
+
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            if (targetNode)
+            {
+                targetNode.deleteNode();
+            }
+        }
     }
 
 

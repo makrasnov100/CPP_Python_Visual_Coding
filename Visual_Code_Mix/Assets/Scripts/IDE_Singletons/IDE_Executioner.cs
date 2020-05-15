@@ -1,8 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Channels;
-using System.Xml.XPath;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class IDE_Executioner : MonoBehaviour
@@ -34,6 +31,14 @@ public class IDE_Executioner : MonoBehaviour
         if (startingNodes.Contains(sink.parent.id))
         {
             startingNodes.Remove(source.parent.id);
+        }
+    }
+
+    public void updateComputedNodesOnDeleteNode(NodeIdentity deletedNode)
+    {
+        if (startingNodes.Contains(deletedNode.id))
+        {
+            startingNodes.Remove(deletedNode.id);
         }
     }
 
