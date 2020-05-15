@@ -9,14 +9,25 @@ public class DataNode : BaseFunction
         if (!node)
             return false;
 
-        setOutLinkValue(node, "data", node.nodeValue);
+        if (node.connectionsIn.ContainsKey("dataIn") && node.connectionsIn["dataIn"].Count > 0)
+        {
+            if (node.connectionsIn["dataIn"][0].isComputed)
+                node.nodeValue = node.connectionsIn["dataIn"][0].outputVal;
+            else
+            {
+                IDE_Output_Controller.instance.AddOutput("dataIn parameter in data node (" + node.id + ") used before it was computed!", OutputMessageType.error);
+                return false;
+            }
+        }
+
+        setOutLinkValue(node, "dataOut", node.nodeValue);
 
         return true;
     }
 
     public override void getConnectionInfo(out List<string> inputs, out List<string> outputs)
     {
-        inputs = new List<string>() {};
-        outputs = new List<string>() {"data"};
+        inputs = new List<string>() {"dataIn"};
+        outputs = new List<string>() {"dataOut"};
     }
 }

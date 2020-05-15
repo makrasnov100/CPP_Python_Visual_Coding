@@ -55,6 +55,9 @@ public class ConnectionLink : MonoBehaviour
 
         parent.connectionsOut[paramName].Add(outInfo);
         newChild.parent.connectionsIn[newChild.paramName].Add(outInfo);
+
+        //Update child node connections since a conditional output may apear if this connection is hooked up
+        newChild.parent.UpdateShownConnectionLinks();
     }
 
     public void OnMouseDown()

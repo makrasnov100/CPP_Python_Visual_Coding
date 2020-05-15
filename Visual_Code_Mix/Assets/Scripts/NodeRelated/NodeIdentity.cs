@@ -161,16 +161,6 @@ public class NodeIdentity : MonoBehaviour
         }
         label.text = nodeText;
 
-        if (nodeType == NodeType.data && nodeText.Contains(" = "))
-        {
-            inputParameters.Clear();
-            outputParameters.Add("data");
-        }
-        else if (nodeType == NodeType.function && nodeName != "")
-        {
-            if(Library.instance && Library.instance.functions.ContainsKey(nodeName))
-                Library.instance.functions[nodeName].getConnectionInfo(out inputParameters, out outputParameters);
-        }
         UpdateShownConnectionLinks();
 
         //determine the outputs possible (if any)
@@ -195,8 +185,26 @@ public class NodeIdentity : MonoBehaviour
     //Required input & output link prefabs
     public GameObject inputLink;
     public GameObject outputLink;
-    void UpdateShownConnectionLinks()
+    public void UpdateShownConnectionLinks()
     {
+        //Update parameter list
+        inputParameters.Clear();
+        outputParameters.Clear();
+        if (nodeType == NodeType.data && (label.text.Contains(" = ") || (connectionsIn.ContainsKey("dataIn") && connectionsIn["dataIn"].Count > 0)))
+        {
+            inputParameters.Add("dataIn");
+            outputParameters.Add("dataOut");
+        }
+        else if (nodeType == NodeType.data && nodeName != "")
+        {
+            inputParameters.Add("dataIn");
+        }
+        else if (nodeType == NodeType.function && nodeName != "")
+        {
+            if (Library.instance && Library.instance.functions.ContainsKey(nodeName))
+                Library.instance.functions[nodeName].getConnectionInfo(out inputParameters, out outputParameters);
+        }
+
         //get dimensions
         float startY = .3f;
 
@@ -319,6 +327,15 @@ public class NodeIdentity : MonoBehaviour
             return nodeType.ToString().ToUpper()[0] + nodeType.ToString().Substring(1) + " Node";
     }
 
+    public void deleteNode()
+    {
+        //Remove all links with this node on others (node identities)
+
+        //Remove this node as start node if it one in the executioner
+
+
+    }
+
     public bool computeNodeOutput()
     {
         bool result = false;
@@ -364,6 +381,10 @@ public class NodeIdentity : MonoBehaviour
 
     public bool isASource()
     {
+        //TODO: implement optional links (for now only data nodes)
+        if (nodeType == NodeType.data && label.text.Contains(" = "))
+            return true;
+
         foreach (string inputLink in inputParameters)
         {
             if (connectionsIn.ContainsKey(inputLink))

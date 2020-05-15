@@ -17,8 +17,11 @@ public class PrintValue : BaseFunction
     public override bool performAction(NodeIdentity node)
     {
         //Check if cannot get input arguments (exit if so)
-        if (!node || !node.connectionsIn.ContainsKey("body"))
+        if (!node || !node.connectionsIn.ContainsKey("body") || node.connectionsIn["body"].Count == 0)
+        {
+            IDE_Output_Controller.instance.AddOutput("No body parameter in print node (" + node.id + ")", OutputMessageType.error);
             return false;
+        }
 
         //TODO: implement on screen output
         string message = "";
